@@ -48,5 +48,4 @@ Aucune donnée brute dans git (le fichier NHTSA fait des centaines de Mo). Les d
 Exception : l'échantillon de 1000 lignes dans `data/echantillon/` (sans colonnes personnelles) est versionné.
 Secrets : `.env` est ignoré, `.env.example` est versionné. Aucune liste de VIN ni mot de passe dans git.
 
-## Suivi des tâches
-GitHub Projects, relié aux issues.
+
