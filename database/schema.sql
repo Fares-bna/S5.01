@@ -13,17 +13,19 @@ CREATE TABLE vehicule (
     id_vehicule  SERIAL PRIMARY KEY,
     marque       VARCHAR(100) NOT NULL,
     modele       VARCHAR(100) NOT NULL,
-    annee        INTEGER NOT NULL,
-    motorisation VARCHAR(50) NOT NULL DEFAULT 'inconnue',  -- souvent absente dans les sources
- 
+    annee        INTEGER,
+    carburant    TEXT,
+    boite        TEXT,
+    cylindres    SMALLINT,
+
     CONSTRAINT chk_annee CHECK (annee BETWEEN 1900 AND 2100),
-    CONSTRAINT uq_vehicule UNIQUE (marque, modele, annee, motorisation)
+    CONSTRAINT uq_vehicule UNIQUE NULLS NOT DISTINCT(marque, modele, annee, carburant, boite, cylindres)
 );
  
 --  COMPOSANT
 CREATE TABLE composant (
     id_composant SERIAL PRIMARY KEY,
-    nom          VARCHAR(100) NOT NULL UNIQUE,
+    nom          TEXT NOT NULL UNIQUE,
     categorie    VARCHAR(100)                   -- électricité, freinage
 );
  
@@ -36,6 +38,7 @@ CREATE TABLE probleme (
     titre             VARCHAR(255),
     description       TEXT NOT NULL,
     gravite           VARCHAR(30),
+    date_signalement  DATE, --optionnel
 
  
     CONSTRAINT uq_probleme_source UNIQUE (id_source, reference_externe),
@@ -59,10 +62,11 @@ CREATE TABLE symptome (
     libelle     VARCHAR(255) NOT NULL UNIQUE
 );
  
--- 6. LIAISONS
+-- LIAISONS
 CREATE TABLE probleme_composant (
     id_probleme  INTEGER NOT NULL REFERENCES probleme(id_probleme)   ON DELETE CASCADE,
     id_composant INTEGER NOT NULL REFERENCES composant(id_composant) ON DELETE RESTRICT,
+    cmplid       VARCHAR(50), -- numero de ligne NHTSA
     PRIMARY KEY (id_probleme, id_composant)
 );
  
@@ -94,6 +98,9 @@ CREATE TABLE vehicule_probleme (
 CREATE TABLE requete_utilisateur (
     id_requete         SERIAL PRIMARY KEY,
     id_vehicule        INTEGER NOT NULL REFERENCES vehicule(id_vehicule) ON DELETE RESTRICT,
+    carburant          TEXT,
+    boite              TEXT,
+    symptomes_saisis   JSONB,
     description_saisie TEXT NOT NULL,
     date_requete       TIMESTAMPTZ NOT NULL DEFAULT now()
 );
