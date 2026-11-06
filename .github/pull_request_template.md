@@ -1,21 +1,21 @@
 ## Tâche
-<!-- Lien vers l'issue : Closes #numéro -->
+<!-- Lien vers l'issue : Closes #numéro, et description courte -->
 
 ## Responsable
 <!-- @pseudo GitHub -->
 
-## Partenaire (relecteur)
+## Partenaire
 <!-- @pseudo GitHub -->
 
-## Livrable du partenaire
-<!-- Ce que le partenaire a produit ou vérifié (relecture, tests, doc...) -->
-
-## Description des changements
-<!-- Ce qui a été fait, en quelques lignes -->
+## Livrable du partenaire (obligatoire)
+<!-- Coche au moins une case -->
+- [ ] Relecture écrite
+- [ ] Test écrit
+- [ ] Note d'explication
+- [ ] Refait seul une partie
+- [ ] Questions d'oral
 
 ## Terminé quand
-- [ ] Le code tourne en local (docker-compose up)
-- [ ] Les tests passent
-- [ ] La documentation est à jour si nécessaire
-- [ ] Aucune donnée brute ni secret dans le commit
-- [ ] Relu et validé par une autre personne
+- [ ] Le travail est fini et testé
+- [ ] Le livrable du partenaire est dans la PR ou dans docs/
+- [ ] Le partenaire a expliqué la tâche en 3 minutes sans aide
