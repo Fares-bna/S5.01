@@ -1,0 +1,5 @@
+data/nhtsa/
+.venv/
+.vscode/
+.env
+__pycache__/
