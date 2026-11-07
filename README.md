@@ -49,3 +49,13 @@ Exception : l'échantillon de 1000 lignes dans `data/echantillon/` (sans colonne
 Secrets : `.env` est ignoré, `.env.example` est versionné. Aucune liste de VIN ni mot de passe dans git.
 
 
+
+## Installation (Ubuntu / WSL)
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r pipeline/requirements.txt
+```
+
+Sous Ubuntu, `pip install` seul échoue (environnement géré par le système) : activer le `.venv` puis utiliser `python -m pip`.
