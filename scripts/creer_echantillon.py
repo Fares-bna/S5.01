@@ -1,4 +1,4 @@
-"""Crée un échantillon de 1000 plaintes NHTSA (véhicules uniquement, sans données personnelles).
+"""Crée un échantillon de 1000 lignes NHTSA (véhicules uniquement, sans données personnelles).
 
 Utilisation :
     python scripts/creer_echantillon.py FICHIER_BRUT.txt data/echantillon/echantillon_nhtsa.csv
@@ -51,6 +51,12 @@ def main() -> None:
     parseur.add_argument("fichier_brut", type=Path)
     parseur.add_argument("sortie", type=Path)
     args = parseur.parse_args()
+
+    if not args.fichier_brut.exists():
+        parseur.error(
+            f"Fichier introuvable : {args.fichier_brut}. "
+            "Télécharge-le sur nhtsa.gov (page Complaints) et place-le dans data/nhtsa/."
+        )
 
     donnees = lire_fichier_brut(args.fichier_brut)
     print(f"Lignes lues : {len(donnees)} (attendu pour ce fichier : {NB_LIGNES_ATTENDUES})")
