@@ -1,0 +1,16 @@
+id_cause,libelle,carburant,boite,urgence
+C1,Batterie faible ou défaillante,,,peut_rouler
+C2,Plaquettes ou disques de frein usés,,,ne_pas_rouler
+C3,Bougies ou bobines d'allumage usées,essence,,garage_rapidement
+C4,Problème de refroidissement du moteur,,,ne_pas_rouler
+C5,Embrayage usé,,manuelle,garage_rapidement
+C6,Boîte automatique défaillante,,automatique,garage_rapidement
+C7,Bougies de préchauffage défaillantes,diesel,,peut_rouler
+C8,Filtre à particules encrassé,diesel,,garage_rapidement
+C9,Vanne EGR encrassée,diesel,,garage_rapidement
+C10,Direction assistée défaillante,,,garage_rapidement
+C11,Pneus usés ou roues mal équilibrées,,,garage_rapidement
+C12,Fuite d'huile moteur,,,garage_rapidement
+C13,Alternateur défaillant,,,garage_rapidement
+C14,Démarreur défaillant,,,peut_rouler
+C15,Sonde lambda défaillante,,,peut_rouler
