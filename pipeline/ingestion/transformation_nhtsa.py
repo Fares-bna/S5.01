@@ -72,13 +72,18 @@ def transformer(brut: pd.DataFrame) -> dict[str, pd.DataFrame]:
         donnees["LDATE"], format="%Y%m%d", errors="coerce"
     ).dt.date
 
+    # Carburant, boîte et cylindres ne sont pas dans le fichier NHTSA : NULL pour l'instant.
+    # Les colonnes existent déjà, pour que le chargement n'ait pas à changer quand le
+    # décodage du VIN les remplira.
     vehicules = (
         donnees[["MAKETXT", "MODELTXT", "annee"]]
         .rename(columns={"MAKETXT": "marque", "MODELTXT": "modele"})
         .drop_duplicates()
+        .assign(carburant=None, boite=None, cylindres=None)
         .reset_index(drop=True)
     )
 
+    # « UNKNOWN OR OTHER » reste dans la table composant (sans plainte reliée, il ne sort dans aucun résultat).
     sans_inconnu = donnees["COMPDESC"] != ""
     composants = (
         donnees.loc[sans_inconnu, ["COMPDESC"]]
@@ -112,6 +117,7 @@ def transformer(brut: pd.DataFrame) -> dict[str, pd.DataFrame]:
     vehicule_probleme = (
         une_par_plainte[["ODINO", "MAKETXT", "MODELTXT", "annee"]]
         .rename(columns={"ODINO": "reference_externe", "MAKETXT": "marque", "MODELTXT": "modele"})
+        .assign(carburant=None, boite=None, cylindres=None)
         .reset_index(drop=True)
     )
 

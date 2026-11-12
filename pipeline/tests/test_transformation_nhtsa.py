@@ -65,3 +65,8 @@ def test_textes_sans_information():
     assert not est_texte_utile("N/A")
     assert not est_texte_utile(" Unknown ")
     assert est_texte_utile("Low coolant warning in red triangle")
+
+
+def test_colonnes_vehicule(tables):
+    assert list(tables["vehicule"].columns) == ["marque", "modele", "annee", "carburant", "boite", "cylindres"]
+    assert tables["vehicule"][["carburant", "boite", "cylindres"]].isna().all().all()

@@ -2,9 +2,9 @@
 
 Chaque test travaille dans un schéma temporaire : la vraie base n'est pas touchée.
 """
-import os
 from pathlib import Path
 
+import psycopg
 import pytest
 from dotenv import load_dotenv
 
@@ -20,7 +20,7 @@ load_dotenv(RACINE / ".env")
 def connexion():
     try:
         conn = se_connecter()
-    except Exception as erreur:  # base absente ou variables manquantes
+    except (psycopg.OperationalError, KeyError) as erreur:  # base absente ou variables .env manquantes
         pytest.skip(f"Base indisponible : {erreur}")
     conn.execute("DROP SCHEMA IF EXISTS test_ingestion CASCADE")
     conn.execute("CREATE SCHEMA test_ingestion")
@@ -63,3 +63,13 @@ def test_annee_inconnue_en_null(connexion, tables):
     charger(tables, connexion)
     assert connexion.execute("SELECT count(*) FROM vehicule WHERE annee IS NULL").fetchone()[0] > 0
     assert connexion.execute("SELECT count(*) FROM vehicule WHERE annee = 9999").fetchone()[0] == 0
+
+
+def test_chargement_avec_carburant_rempli(connexion, tables):
+    """Quand le décodage du VIN remplira le carburant, le chargement ne doit pas changer."""
+    avec_carburant = {nom: table.copy() for nom, table in tables.items()}
+    for nom in ("vehicule", "vehicule_probleme"):
+        avec_carburant[nom]["carburant"] = "diesel"
+    charger(avec_carburant, connexion)
+    assert compter(connexion, "vehicule_probleme") == 996
+    assert connexion.execute("SELECT count(*) FROM vehicule WHERE carburant = 'diesel'").fetchone()[0] == len(tables["vehicule"])

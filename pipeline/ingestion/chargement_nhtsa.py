@@ -6,6 +6,7 @@ Tout se fait dans une seule transaction : en cas d'erreur, rien n'est écrit.
 """
 import os
 
+import numpy as np
 import pandas as pd
 import psycopg
 
@@ -26,8 +27,12 @@ def se_connecter() -> psycopg.Connection:
 
 
 def _valeur(v):
-    """pandas -> Python : <NA> et NaN deviennent None (NULL en base)."""
-    return None if pd.isna(v) else (int(v) if hasattr(v, "item") and isinstance(v.item(), int) else v)
+    """pandas -> Python : <NA> et NaN deviennent None (NULL en base), les entiers numpy des int."""
+    if pd.isna(v):
+        return None
+    if isinstance(v, np.integer):
+        return int(v)
+    return v
 
 
 def _lignes(table: pd.DataFrame, colonnes: list[str]) -> list[tuple]:
@@ -61,18 +66,20 @@ def charger(tables: dict[str, pd.DataFrame], connexion: psycopg.Connection,
         curseur.execute("SELECT nom, id_composant FROM composant")
         id_composant = dict(curseur.fetchall())
 
-        # 3. Véhicules (carburant, boîte, cylindres inconnus : NULL)
-        for lot in _par_lots(_lignes(tables["vehicule"], ["marque", "modele", "annee"])):
+        # 3. Véhicules. Un véhicule = marque, modèle, année, carburant, boîte, cylindres
+        #    (les trois derniers sont NULL tant que le VIN n'est pas décodé).
+        colonnes_vehicule = ["marque", "modele", "annee", "carburant", "boite", "cylindres"]
+        for lot in _par_lots(_lignes(tables["vehicule"], colonnes_vehicule)):
             curseur.executemany(
-                """INSERT INTO vehicule (marque, modele, annee) VALUES (%s, %s, %s)
+                """INSERT INTO vehicule (marque, modele, annee, carburant, boite, cylindres)
+                   VALUES (%s, %s, %s, %s, %s, %s)
                    ON CONFLICT ON CONSTRAINT uq_vehicule DO NOTHING""",
                 lot,
             )
         curseur.execute(
-            """SELECT marque, modele, annee, id_vehicule FROM vehicule
-               WHERE carburant IS NULL AND boite IS NULL AND cylindres IS NULL"""
+            "SELECT marque, modele, annee, carburant, boite, cylindres, id_vehicule FROM vehicule"
         )
-        id_vehicule = {(m, mo, a): i for m, mo, a, i in curseur.fetchall()}
+        id_vehicule = {tuple(ligne[:6]): ligne[6] for ligne in curseur.fetchall()}
 
         # 4. Problèmes (une plainte = un ODINO) ; relancer met à jour le texte, la gravité, la date
         lignes = [(id_source, *ligne) for ligne in _lignes(
@@ -102,10 +109,10 @@ def charger(tables: dict[str, pd.DataFrame], connexion: psycopg.Connection,
             )
 
         # 6. Liens véhicule <-> plainte
-        liens_vehicule = []
-        for ref, marque, modele, annee in _lignes(
-                tables["vehicule_probleme"], ["reference_externe", "marque", "modele", "annee"]):
-            liens_vehicule.append((id_vehicule[(marque, modele, annee)], id_probleme[ref]))
+        liens_vehicule = [
+            (id_vehicule[tuple(vehicule)], id_probleme[ref])
+            for ref, *vehicule in _lignes(tables["vehicule_probleme"], ["reference_externe", *colonnes_vehicule])
+        ]
         for lot in _par_lots(liens_vehicule):
             curseur.executemany(
                 """INSERT INTO vehicule_probleme (id_vehicule, id_probleme) VALUES (%s, %s)
