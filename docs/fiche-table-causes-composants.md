@@ -21,7 +21,7 @@ Une cause peut toucher plusieurs composants (les freins : `SERVICE BRAKES` et `S
 
 ## Choix faits
 
-- **On relie les causes aux catégories, pas aux noms complets.** Un nom complet comme `ELECTRICAL SYSTEM:ALTERNATOR/GENERATOR/REGULATOR` a pour catégorie `ELECTRICAL SYSTEM` (partie avant le premier « : », comme dans l'ingestion de Yasmine). L'échantillon compte 67 noms complets, mais seulement une vingtaine de catégories, plus stables d'une version du fichier à l'autre.
+- **On relie les causes aux catégories, pas aux noms complets.** Un nom complet comme `ELECTRICAL SYSTEM:ALTERNATOR/GENERATOR/REGULATOR` a pour catégorie `ELECTRICAL SYSTEM` (partie avant le premier « : », comme dans l'ingestion de Yasmine). L'échantillon compte 67 noms complets, mais seulement 30 catégories, plus stables d'une version du fichier à l'autre.
 - **Les variantes avec une virgule restent séparées.** `SERVICE BRAKES` et `SERVICE BRAKES, HYDRAULIC` sont deux catégories différentes : c'est la table qui les relie toutes les deux à la cause C2.
 - **Valeurs sans accents ni espaces** pour `carburant`, `boite` et `urgence` (ex. `ne_pas_rouler`), comme pour la gravité dans la base.
 
