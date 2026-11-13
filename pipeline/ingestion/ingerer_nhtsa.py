@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from pipeline.ingestion.chargement_nhtsa import charger, se_connecter
 from pipeline.ingestion.lecture_nhtsa import lire_plaintes
 from pipeline.ingestion.transformation_nhtsa import transformer
+from pipeline.ingestion.validation_nhtsa import valider_plaintes
 
 
 def main() -> None:
@@ -23,6 +24,8 @@ def main() -> None:
     load_dotenv()
     brut = lire_plaintes(args.fichier)
     print(f"Lignes lues : {len(brut)}")
+    valider_plaintes(brut)
+    print("Format validé.")
     tables = transformer(brut)
     print({nom: len(table) for nom, table in tables.items()})
     with se_connecter() as connexion:
