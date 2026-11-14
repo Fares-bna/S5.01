@@ -1,0 +1,76 @@
+@import './tokens.css';
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-papier-atelier);
+  color: var(--text-noir-carbone);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.app-header {
+  background-color: var(--bg-sauge-chassis);
+  border-bottom: 1px solid var(--border-jointure-sauge);
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-logo {
+  font-family: var(--font-brand);
+  font-weight: 800;
+  font-size: 25px;
+  letter-spacing: -1px;
+  margin: 0;
+}
+
+.brand-logo span {
+  color: var(--color-emeraude);
+}
+
+.stepper-nav {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-acier-patine);
+  display: flex;
+  gap: 16px;
+}
+
+.stepper-nav .active {
+  color: var(--color-emeraude);
+  font-weight: 700;
+  border-bottom: 3px solid var(--color-emeraude);
+  padding-bottom: 4px;
+}
+
+.page-container {
+  max-width: 920px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.card-atelier {
+  background-color: var(--bg-ivoire-fiche);
+  border: 1px solid var(--border-filet-calibre);
+  border-top: 3px solid var(--color-emeraude);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.page-title {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+  color: var(--text-ardoise);
+  margin: 0;
+}

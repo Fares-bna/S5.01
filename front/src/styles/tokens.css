@@ -1,0 +1,33 @@
+:root {
+  /* Les Polices d'écritures ! */
+  --font-brand: 'Syne', sans-serif;
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+/* Couleur des approches de recommandations & des chiffres de performance */
+  --color-emeraude: #059669;
+  --color-emeraude-pression: #047857;
+  --color-marine-heuristique: #1E3A5F;
+  --color-ambre-obd: #D97706;
+  --color-halo-ambre: #FBF1E2;
+  --color-carmin-nhtsa: #DC2626;
+  --color-halo-carmin: #FEF2F2;
+
+  /* Couleur de fond là on privilégie les teintes claires mais pas blanches */
+  --bg-papier-atelier: #FAF8F5;
+  --bg-ivoire-fiche: #FFFDF9;
+  --bg-creme-benchmark: #F3EFEA;
+  --border-filet-calibre: #E6E1DA;
+  --bg-sauge-chassis: #E8EDE6;
+
+/* Couleur du texte */
+  --text-noir-carbone: #1C1917;
+  --text-graphite: #292524;
+  --text-acier-trempe: #44403C;
+  --text-ardoise: #57534E;
+  --text-acier-patine: #78716C;
+  --text-gris-jauge: #827B72;
+  --border-jointure-sauge: #CDD7CA;
+  --text-encre-sauge: #526257;
+}
