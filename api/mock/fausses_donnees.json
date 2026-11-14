@@ -1,0 +1,572 @@
+{
+  "vehicules": [
+    {
+      "id_vehicule": 1,
+      "marque": "OPEL",
+      "modele": "CORSA",
+      "annee": 2019,
+      "carburant": null,
+      "boite": null,
+      "cylindres": null
+    },
+    {
+      "id_vehicule": 2,
+      "marque": "LAND ROVER",
+      "modele": "RANGE ROVER",
+      "annee": 2016,
+      "carburant": null,
+      "boite": null,
+      "cylindres": null
+    },
+    {
+      "id_vehicule": 3,
+      "marque": "HYUNDAI",
+      "modele": "SANTA FE",
+      "annee": 2017,
+      "carburant": null,
+      "boite": null,
+      "cylindres": null
+    },
+    {
+      "id_vehicule": 4,
+      "marque": "PEUGEOT",
+      "modele": "208",
+      "annee": null,
+      "carburant": null,
+      "boite": null,
+      "cylindres": null
+    },
+    {
+      "id_vehicule": 5,
+      "marque": "RENAULT",
+      "modele": "CLIO",
+      "annee": 2019,
+      "carburant": "essence",
+      "boite": "manuelle",
+      "cylindres": 4
+    }
+  ],
+  "symptomes": [
+    {
+      "id_symptome": 1,
+      "libelle": "Voyant de frein allumé"
+    },
+    {
+      "id_symptome": 2,
+      "libelle": "Vibrations dans la pédale ou le volant au freinage"
+    },
+    {
+      "id_symptome": 3,
+      "libelle": "Pédale de frein molle"
+    },
+    {
+      "id_symptome": 4,
+      "libelle": "Bruit au freinage"
+    },
+    {
+      "id_symptome": 5,
+      "libelle": "La voiture tire d'un côté en freinant"
+    },
+    {
+      "id_symptome": 6,
+      "libelle": "Odeur de brûlé après un freinage"
+    }
+  ],
+  "problemes": [
+    {
+      "id_probleme": 12,
+      "titre": "Usure des plaquettes de frein",
+      "description": "[FICTIF] Loud grinding noise when braking. The dealer found the brake pads worn.",
+      "gravite": "elevee",
+      "type_probleme": "signalement",
+      "source": "NHTSA complaints",
+      "solutions": [
+        {
+          "id_solution": 3,
+          "libelle": "Remplacer les plaquettes de frein",
+          "description": "Faire contrôler et remplacer les plaquettes de frein usées."
+        }
+      ]
+    },
+    {
+      "id_probleme": 13,
+      "titre": "Disques de frein voilés",
+      "description": "[FICTIF] The steering wheel shakes when braking from highway speed. Mechanic says the front rotors are warped.",
+      "gravite": "moderee",
+      "type_probleme": "signalement",
+      "source": "NHTSA complaints",
+      "solutions": [
+        {
+          "id_solution": 4,
+          "libelle": "Faire contrôler les disques de frein",
+          "description": "Faire mesurer le voile des disques et les rectifier ou les remplacer."
+        }
+      ]
+    },
+    {
+      "id_probleme": 14,
+      "titre": "Rappel : défaut du maître-cylindre de frein",
+      "description": "[FICTIF] The brake master cylinder may leak internally, increasing the distance needed to stop the vehicle and raising the risk of a crash.",
+      "gravite": "critique",
+      "type_probleme": "rappel",
+      "source": "NHTSA recalls",
+      "solutions": [
+        {
+          "id_solution": 5,
+          "libelle": "Prendre rendez-vous pour le remplacement gratuit du maître-cylindre",
+          "description": "Remède proposé par le constructeur."
+        }
+      ]
+    },
+    {
+      "id_probleme": 15,
+      "titre": "Étrier de frein grippé",
+      "description": "[FICTIF] After a short drive one front wheel is very hot and the car pulls to one side. A seized brake caliper was diagnosed.",
+      "gravite": "moderee",
+      "type_probleme": "signalement",
+      "source": "NHTSA complaints",
+      "solutions": [
+        {
+          "id_solution": 6,
+          "libelle": "Faire contrôler l'étrier de frein",
+          "description": "Faire dégripper ou remplacer l'étrier de frein concerné."
+        }
+      ]
+    },
+    {
+      "id_probleme": 16,
+      "titre": "Fuite de liquide de frein",
+      "description": "[FICTIF] The brake pedal feels soft and sinks to the floor. A brake fluid leak was found at a rear brake line.",
+      "gravite": "elevee",
+      "type_probleme": "signalement",
+      "source": "NHTSA complaints",
+      "solutions": [
+        {
+          "id_solution": 7,
+          "libelle": "Faire vérifier le circuit de freinage",
+          "description": "Contrôler les conduites et le niveau de liquide de frein, puis réparer la fuite."
+        }
+      ]
+    },
+    {
+      "id_probleme": 17,
+      "titre": "Voyant de frein allumé sans cause visible",
+      "description": "[FICTIF] The brake warning light stays on although the fluid level is correct. No other symptom was noticed.",
+      "gravite": "faible",
+      "type_probleme": "signalement",
+      "source": "NHTSA complaints",
+      "solutions": [
+        {
+          "id_solution": 8,
+          "libelle": "Faire diagnostiquer le voyant en atelier",
+          "description": "Lire les codes défaut et vérifier les capteurs du circuit de freinage."
+        }
+      ]
+    }
+  ],
+  "recommandation": {
+    "id_requete": 42,
+    "heuristique": {
+      "temps_calcul_ms": 12.4,
+      "nb_resultats": 5,
+      "resultats": [
+        {
+          "rang": 1,
+          "score": 0.85,
+          "id_probleme": 12,
+          "titre": "Usure des plaquettes de frein",
+          "gravite": "elevee",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 3,
+              "libelle": "Remplacer les plaquettes de frein",
+              "description": "Faire contrôler et remplacer les plaquettes de frein usées."
+            }
+          ],
+          "explication": {
+            "composants_correspondants": [
+              "SERVICE BRAKES"
+            ],
+            "nb_signalements": 34,
+            "extrait": "Loud grinding noise when braking..."
+          }
+        },
+        {
+          "rang": 2,
+          "score": 0.78,
+          "id_probleme": 13,
+          "titre": "Disques de frein voilés",
+          "gravite": "moderee",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 4,
+              "libelle": "Faire contrôler les disques de frein",
+              "description": "Faire mesurer le voile des disques et les rectifier ou les remplacer."
+            }
+          ],
+          "explication": {
+            "composants_correspondants": [
+              "SERVICE BRAKES"
+            ],
+            "nb_signalements": 21,
+            "extrait": "The steering wheel shakes when braking from highway speed..."
+          }
+        },
+        {
+          "rang": 3,
+          "score": 0.66,
+          "id_probleme": 15,
+          "titre": "Étrier de frein grippé",
+          "gravite": "moderee",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 6,
+              "libelle": "Faire contrôler l'étrier de frein",
+              "description": "Faire dégripper ou remplacer l'étrier de frein concerné."
+            }
+          ],
+          "explication": {
+            "composants_correspondants": [
+              "SERVICE BRAKES"
+            ],
+            "nb_signalements": 18,
+            "extrait": "After a short drive one front wheel is very hot and the car pulls to one side..."
+          }
+        },
+        {
+          "rang": 4,
+          "score": 0.52,
+          "id_probleme": 16,
+          "titre": "Fuite de liquide de frein",
+          "gravite": "elevee",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 7,
+              "libelle": "Faire vérifier le circuit de freinage",
+              "description": "Contrôler les conduites et le niveau de liquide de frein, puis réparer la fuite."
+            }
+          ],
+          "explication": {
+            "composants_correspondants": [
+              "SERVICE BRAKES"
+            ],
+            "nb_signalements": 9,
+            "extrait": "The brake pedal feels soft and sinks to the floor..."
+          }
+        },
+        {
+          "rang": 5,
+          "score": 0.41,
+          "id_probleme": 17,
+          "titre": "Voyant de frein allumé sans cause visible",
+          "gravite": "faible",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 8,
+              "libelle": "Faire diagnostiquer le voyant en atelier",
+              "description": "Lire les codes défaut et vérifier les capteurs du circuit de freinage."
+            }
+          ],
+          "explication": {
+            "composants_correspondants": [
+              "SERVICE BRAKES"
+            ],
+            "nb_signalements": 5,
+            "extrait": "The brake warning light stays on although the fluid level is correct..."
+          }
+        }
+      ]
+    },
+    "embeddings": {
+      "temps_calcul_ms": 48.7,
+      "nb_resultats": 5,
+      "resultats": [
+        {
+          "rang": 1,
+          "score": 0.91,
+          "id_probleme": 12,
+          "titre": "Usure des plaquettes de frein",
+          "gravite": "elevee",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 3,
+              "libelle": "Remplacer les plaquettes de frein",
+              "description": "Faire contrôler et remplacer les plaquettes de frein usées."
+            }
+          ],
+          "explication": {
+            "similarite": 0.91,
+            "extrait": "Loud grinding noise when braking..."
+          }
+        },
+        {
+          "rang": 2,
+          "score": 0.84,
+          "id_probleme": 14,
+          "titre": "Rappel : défaut du maître-cylindre de frein",
+          "gravite": "critique",
+          "type_probleme": "rappel",
+          "solutions": [
+            {
+              "id_solution": 5,
+              "libelle": "Prendre rendez-vous pour le remplacement gratuit du maître-cylindre",
+              "description": "Remède proposé par le constructeur."
+            }
+          ],
+          "explication": {
+            "similarite": 0.84,
+            "extrait": "The brake master cylinder may leak internally, increasing the distance needed to stop the vehicle and raising the risk of a crash...."
+          }
+        },
+        {
+          "rang": 3,
+          "score": 0.79,
+          "id_probleme": 13,
+          "titre": "Disques de frein voilés",
+          "gravite": "moderee",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 4,
+              "libelle": "Faire contrôler les disques de frein",
+              "description": "Faire mesurer le voile des disques et les rectifier ou les remplacer."
+            }
+          ],
+          "explication": {
+            "similarite": 0.79,
+            "extrait": "The steering wheel shakes when braking from highway speed..."
+          }
+        },
+        {
+          "rang": 4,
+          "score": 0.7,
+          "id_probleme": 16,
+          "titre": "Fuite de liquide de frein",
+          "gravite": "elevee",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 7,
+              "libelle": "Faire vérifier le circuit de freinage",
+              "description": "Contrôler les conduites et le niveau de liquide de frein, puis réparer la fuite."
+            }
+          ],
+          "explication": {
+            "similarite": 0.7,
+            "extrait": "The brake pedal feels soft and sinks to the floor..."
+          }
+        },
+        {
+          "rang": 5,
+          "score": 0.62,
+          "id_probleme": 15,
+          "titre": "Étrier de frein grippé",
+          "gravite": "moderee",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 6,
+              "libelle": "Faire contrôler l'étrier de frein",
+              "description": "Faire dégripper ou remplacer l'étrier de frein concerné."
+            }
+          ],
+          "explication": {
+            "similarite": 0.62,
+            "extrait": "After a short drive one front wheel is very hot and the car pulls to one side..."
+          }
+        }
+      ]
+    }
+  },
+  "recommandation_b_indisponible": {
+    "id_requete": 43,
+    "heuristique": {
+      "temps_calcul_ms": 12.4,
+      "nb_resultats": 5,
+      "resultats": [
+        {
+          "rang": 1,
+          "score": 0.85,
+          "id_probleme": 12,
+          "titre": "Usure des plaquettes de frein",
+          "gravite": "elevee",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 3,
+              "libelle": "Remplacer les plaquettes de frein",
+              "description": "Faire contrôler et remplacer les plaquettes de frein usées."
+            }
+          ],
+          "explication": {
+            "composants_correspondants": [
+              "SERVICE BRAKES"
+            ],
+            "nb_signalements": 34,
+            "extrait": "Loud grinding noise when braking..."
+          }
+        },
+        {
+          "rang": 2,
+          "score": 0.78,
+          "id_probleme": 13,
+          "titre": "Disques de frein voilés",
+          "gravite": "moderee",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 4,
+              "libelle": "Faire contrôler les disques de frein",
+              "description": "Faire mesurer le voile des disques et les rectifier ou les remplacer."
+            }
+          ],
+          "explication": {
+            "composants_correspondants": [
+              "SERVICE BRAKES"
+            ],
+            "nb_signalements": 21,
+            "extrait": "The steering wheel shakes when braking from highway speed..."
+          }
+        },
+        {
+          "rang": 3,
+          "score": 0.66,
+          "id_probleme": 15,
+          "titre": "Étrier de frein grippé",
+          "gravite": "moderee",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 6,
+              "libelle": "Faire contrôler l'étrier de frein",
+              "description": "Faire dégripper ou remplacer l'étrier de frein concerné."
+            }
+          ],
+          "explication": {
+            "composants_correspondants": [
+              "SERVICE BRAKES"
+            ],
+            "nb_signalements": 18,
+            "extrait": "After a short drive one front wheel is very hot and the car pulls to one side..."
+          }
+        },
+        {
+          "rang": 4,
+          "score": 0.52,
+          "id_probleme": 16,
+          "titre": "Fuite de liquide de frein",
+          "gravite": "elevee",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 7,
+              "libelle": "Faire vérifier le circuit de freinage",
+              "description": "Contrôler les conduites et le niveau de liquide de frein, puis réparer la fuite."
+            }
+          ],
+          "explication": {
+            "composants_correspondants": [
+              "SERVICE BRAKES"
+            ],
+            "nb_signalements": 9,
+            "extrait": "The brake pedal feels soft and sinks to the floor..."
+          }
+        },
+        {
+          "rang": 5,
+          "score": 0.41,
+          "id_probleme": 17,
+          "titre": "Voyant de frein allumé sans cause visible",
+          "gravite": "faible",
+          "type_probleme": "signalement",
+          "solutions": [
+            {
+              "id_solution": 8,
+              "libelle": "Faire diagnostiquer le voyant en atelier",
+              "description": "Lire les codes défaut et vérifier les capteurs du circuit de freinage."
+            }
+          ],
+          "explication": {
+            "composants_correspondants": [
+              "SERVICE BRAKES"
+            ],
+            "nb_signalements": 5,
+            "extrait": "The brake warning light stays on although the fluid level is correct..."
+          }
+        }
+      ]
+    },
+    "embeddings": {
+      "temps_calcul_ms": null,
+      "nb_resultats": 0,
+      "resultats": []
+    }
+  },
+  "recommandation_aucun_resultat": {
+    "id_requete": 44,
+    "heuristique": {
+      "temps_calcul_ms": 3.2,
+      "nb_resultats": 0,
+      "resultats": []
+    },
+    "embeddings": {
+      "temps_calcul_ms": 40.1,
+      "nb_resultats": 0,
+      "resultats": []
+    }
+  },
+  "metriques": {
+    "approches": [
+      {
+        "approche": "heuristique",
+        "min_ms": 4.1,
+        "max_ms": 38.2,
+        "moyen_ms": 12.6,
+        "energie_kwh_moyen": null,
+        "complexite": null
+      },
+      {
+        "approche": "embeddings",
+        "min_ms": 61,
+        "max_ms": 310.5,
+        "moyen_ms": 88.7,
+        "energie_kwh_moyen": null,
+        "complexite": null
+      }
+    ]
+  },
+  "erreurs": {
+    "VEHICULE_INCONNU": {
+      "erreur": {
+        "code": "VEHICULE_INCONNU",
+        "message": "Aucun véhicule avec l'id 999.",
+        "details": null
+      }
+    },
+    "PROBLEME_INCONNU": {
+      "erreur": {
+        "code": "PROBLEME_INCONNU",
+        "message": "Aucun problème avec l'id 999.",
+        "details": null
+      }
+    },
+    "REQUETE_INVALIDE": {
+      "erreur": {
+        "code": "REQUETE_INVALIDE",
+        "message": "La requête ne respecte pas le contrat d'API.",
+        "details": [
+          {
+            "champ": "description",
+            "message": "La description doit contenir au moins 3 caractères."
+          }
+        ]
+      }
+    }
+  }
+}
