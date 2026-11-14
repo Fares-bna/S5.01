@@ -27,6 +27,6 @@ Une cause peut toucher plusieurs composants (les freins : `SERVICE BRAKES` et `S
 
 ## Pièges
 
-- Plusieurs causes partagent la même catégorie (C1, C13 et C14 sont toutes dans `ELECTRICAL SYSTEM`). Le composant seul ne suffit pas à les distinguer : il faudra les mots-clés anglais de chaque cause (voir le document des libellés) pour lire le texte des plaintes.
-- Les catégories diesel (`FUEL SYSTEM, DIESEL`) sont très rares dans les données américaines : les causes C7 à C9 reposent surtout sur les règles diesel de l'heuristique.
+- Plusieurs causes partagent la même catégorie : `ENGINE` sert à 7 causes (C3, C4, C7, C8, C9, C12, C15) et `ELECTRICAL SYSTEM` à 3 (C1, C13, C14). Ces causes ont donc le même nombre de plaintes : le comptage seul ne les départage pas. C'est le symptôme saisi par l'utilisateur qui fera la différence, avec les mots-clés anglais de chaque cause (voir le document des libellés) pour lire le texte des plaintes.
+- Les catégories diesel sont très rares dans les données américaines : `FUEL SYSTEM, DIESEL` ne compte que 335 plaintes dans le fichier complet 2025-2026 (1 dans l'échantillon). Les causes C7 à C9 reposent donc surtout sur les règles diesel de l'heuristique.
 - Les fichiers ne sont pas encore chargés en base : les tables `cause` et `cause_composant` restent à ajouter au schéma (avec Myriam).

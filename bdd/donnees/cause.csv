@@ -12,5 +12,5 @@ C10,Direction assistée défaillante,,,garage_rapidement
 C11,Pneus usés ou roues mal équilibrées,,,garage_rapidement
 C12,Fuite d'huile moteur,,,garage_rapidement
 C13,Alternateur défaillant,,,garage_rapidement
-C14,Démarreur défaillant,,,peut_rouler
+C14,Démarreur défaillant,,,garage_rapidement
 C15,Sonde lambda défaillante,,,peut_rouler
