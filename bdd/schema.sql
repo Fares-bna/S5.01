@@ -114,7 +114,7 @@ CREATE TABLE cause_composant(
     id_cause  VARCHAR(10) NOT NULL REFERENCES cause(id_cause) ON DELETE CASCADE,
     categorie VARCHAR(100) NOT NULL,
     PRIMARY KEY (id_cause, categorie)
-)
+);
  
 -- REQUETE UTILISATEUR
 CREATE TABLE requete_utilisateur (
