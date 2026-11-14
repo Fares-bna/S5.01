@@ -47,6 +47,22 @@ CREATE TABLE probleme (
         gravite IS NULL OR gravite IN ('faible', 'moderee', 'elevee', 'critique')
     )
 );
+
+-- CAUSE (une ligne par cause)
+CREATE TABLE cause (
+    id_cause  VARCHAR(10)  PRIMARY KEY,         -- 'C1' à 'C15'
+    libelle   VARCHAR(255) NOT NULL UNIQUE,
+    carburant VARCHAR(30),                      -- NULL = la cause concerne tous les carburants
+    boite     VARCHAR(30),                      -- NULL = la cause concerne toutes les boîtes
+    urgence   VARCHAR(30)  NOT NULL,
+ 
+    CONSTRAINT chk_cause_carburant
+        CHECK (carburant IS NULL OR carburant IN ('essence', 'diesel', 'hybride', 'electrique')),
+    CONSTRAINT chk_cause_boite
+        CHECK (boite IS NULL OR boite IN ('manuelle', 'automatique')),
+    CONSTRAINT chk_cause_urgence
+        CHECK (urgence IN ('peut_rouler', 'garage_rapidement', 'ne_pas_rouler'))
+);
  
 -- SOLUTION (ce que l'on recommande réellement)
 CREATE TABLE solution (
@@ -93,6 +109,12 @@ CREATE TABLE vehicule_probleme (
     id_probleme INTEGER NOT NULL REFERENCES probleme(id_probleme) ON DELETE CASCADE,
     PRIMARY KEY (id_vehicule, id_probleme)
 );
+
+CREATE TABLE cause_composant(
+    id_cause  VARCHAR(10) NOT NULL REFERENCES cause(id_cause) ON DELETE CASCADE,
+    categorie VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id_cause, categorie)
+)
  
 -- REQUETE UTILISATEUR
 CREATE TABLE requete_utilisateur (
