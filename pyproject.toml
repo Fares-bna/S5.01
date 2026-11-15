@@ -1,0 +1,12 @@
+[tool.ruff]
+line-length = 130
+target-version = "py311"
+extend-exclude = [".venv", "data"]
+
+[tool.ruff.lint]
+# E = erreurs de style pycodestyle, F = erreurs de code (import inutilisé, variable non définie)
+select = ["E", "F"]
+
+[tool.pytest.ini_options]
+# permet "from pipeline..." et "from benchmark..." depuis n'importe où
+pythonpath = ["."]
