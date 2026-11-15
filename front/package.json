@@ -10,7 +10,7 @@
     "lint": "eslint . --ext .vue,.js,.cjs --max-warnings 0"
   },
   "dependencies": {
-    "chart.js": "^4.4.1",
+    "chart.js": "^4.6.1",
     "vue": "^3.4.21"
   },
   "devDependencies": {
