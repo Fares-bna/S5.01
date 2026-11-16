@@ -76,6 +76,8 @@ Les tests de chargement utilisent la base Docker. Si elle n'est pas lancée, ils
 
 - [Contrat d'API](docs/contrat_api.md) : routes, données échangées entre le front et le back
 - [Schéma entité-association](docs/schema_er.md) : les tables de la base et leurs liens
+- [Pipeline d'ingestion](docs/pipeline.md) : lancer l'ingestion des plaintes NHTSA de bout en bout
+- [Fiche des sources](docs/fiche-sources.md) : origine des données, vérifications et chiffres chargés
 - [Règles de l'heuristique](docs/regles_heuristique.md) : calcul des poids et algorithme de l'approche A
 - [Table causes ↔ composants](docs/fiche-table-causes-composants.md) : lien entre nos causes et les composants NHTSA
 - [Règles GitHub de l'équipe](docs/regles_github.md) : branches, commits, modèle de PR, versions
