@@ -45,7 +45,7 @@ Le fichier `.env` contient les identifiants de la base. Il n'est jamais versionn
 
 ```bash
 docker compose up -d
-docker compose exec -T db psql -U diagduo -d diagduo < bdd/schema.sql
+docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < bdd/schema.sql
 ```
 
 La première commande lance PostgreSQL 16 dans un conteneur. La seconde crée les tables (à faire une seule fois, la base est conservée dans un volume Docker).
@@ -75,4 +75,7 @@ Les tests de chargement utilisent la base Docker. Si elle n'est pas lancée, ils
 ## Documentation
 
 - [Contrat d'API](docs/contrat_api.md) : routes, données échangées entre le front et le back
+- [Schéma entité-association](docs/schema_er.md) : les tables de la base et leurs liens
+- [Règles de l'heuristique](docs/regles_heuristique.md) : calcul des poids et algorithme de l'approche A
+- [Table causes ↔ composants](docs/fiche-table-causes-composants.md) : lien entre nos causes et les composants NHTSA
 - [Règles GitHub de l'équipe](docs/regles_github.md) : branches, commits, modèle de PR, versions
