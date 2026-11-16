@@ -28,7 +28,7 @@ Pour des raisons de praticité, et dans l'optique de tester avant d'agrandir not
 
 CMPLID est le numéro interne unique de chaque ligne. Dans le fichier téléchargé le 4 nov 2026 (COMPLAINTS_RECEIVED_2025-2026.zip), il est unique sur les 210 698 lignes. Selon le dictionnaire officiel (CMPL.txt), NHTSA peut modifier les données d'un CMPLID d'un jour à l'autre, et le fichier est mis à jour tous les jours. Si on recharge un fichier plus récent, il faut donc mettre à jour les lignes existantes au lieu d'en ajouter : le chargement est conçu ainsi (`ON CONFLICT`, une seule transaction), et il a été rejoué deux fois sans créer de doublon. Pour le projet, on garde la version téléchargée le 4 nov, avec son empreinte sha256.
 
-ODINO est le numéro de référence de la plainte. Il se répète quand une plainte touche plusieurs composants : on a 141 126 plaintes pour 210 698 lignes.
+ODINO est le numéro de référence de la plainte. Il se répète quand une plainte touche plusieurs composants : on a 141 126 plaintes pour 210 698 lignes. On en charge 140 271 (section 7) : l'écart vient des filtres du pipeline, qui ne garde que les véhicules et écarte les plaintes dont le texte est vide ou sans information.
 
 **Décision (validée avec Fares)** : une ligne par composant. D'une voiture à une autre, une même plainte peut ne pas concerner les mêmes composants. En base, une plainte (table `probleme`) est donc reliée à un ou plusieurs composants (table `probleme_composant`).
 
@@ -45,7 +45,7 @@ Le problème : une voiture automatique ou manuelle ne présente pas les mêmes p
 - fueleconomy.gov (EPA, États-Unis) : fichier CSV de tous les véhicules 1984–2026, mis à jour le 16 juin 2026. La page ne liste ni les colonnes ni la licence.
 - ADEME (data.gouv.fr) : émissions de CO2 et de polluants des véhicules commercialisés en France, Licence Ouverte, mis à jour le 15 décembre 2025, avec marque, modèle et type d'énergie. La boîte de vitesses et la cylindrée ne sont pas mentionnées, et elle ne couvre que les véhicules neufs vendus en France.
 
-**→ Piste 2 : règles de l'heuristique.** L'utilisateur choisit le carburant et la boîte dans le formulaire, et les règles de l'approche A en tiennent compte (essence : bougies d'allumage ; diesel : bougies de préchauffage, filtre à particules, vanne EGR ; boîte manuelle : embrayage, synchroniseurs ; boîte automatique : patinage, convertisseur de couple). Elle ne dépend pas des données NHTSA et fonctionne pour toutes les voitures. Ce sont des règles d'expert, pas des résultats statistiques : on les limite à une dizaine de règles, chacune avec sa source (L'argus, goodmecano.com, auto-max.fr, colonne « source » du tableau), validées par l'équipe, puis testées sur le jeu de test séparé. Les règles diesel ne vivent que dans l'heuristique, et leur poids est fixé par l'équipe, pas par la fréquence des plaintes. Limites : rien n'est vérifié pour les voitures hybrides et électriques, et ces règles ne peuvent pas être évaluées sur NHTSA dans le benchmark, puisque le carburant n'y figure pas.
+**→ Piste 2 : règles de l'heuristique.** L'utilisateur choisit le carburant et la boîte dans le formulaire, et l'approche A en tient compte de deux façons (`docs/regles_heuristique.md`). D'abord, le carburant et la boîte servent à écarter des causes qui ne peuvent pas exister sur le véhicule (filtres E1 à E4) : par exemple, une boîte manuelle écarte C6 (boîte automatique) et une boîte automatique écarte C5 (embrayage). Ensuite, les poids des règles symptôme → cause sont calculés à partir des plaintes NHTSA (part des plaintes d'un symptôme dont au moins une catégorie appartient à la cause), y compris pour les causes diesel C7 à C9 ; une règle appuyée par moins de 3 plaintes n'est pas conservée. Pour cette première version, les poids sont calculés sur l'échantillon de 996 plaintes, et seront recalculés sur le fichier complet. Cette piste ne dépend pas du carburant des données NHTSA et fonctionne pour toutes les voitures. Limites : les filtres E1 à E4 sont des règles d'expert, qui ne peuvent pas être évaluées sur NHTSA puisque le carburant n'y figure pas ; le diesel est presque absent des plaintes américaines (les poids de C7 à C9 viennent surtout de la catégorie ENGINE, qui regroupe des voitures essence) ; rien n'est vérifié pour les voitures hybrides et électriques.
 
 **Décision pour le rendu 1 : la piste 2 seulement.** Ses règles (`docs/regles_heuristique.md`) alimentent l'approche A de l'API. Les pistes 1 et 1 bis restent des axes d'amélioration.
 
@@ -99,12 +99,12 @@ Cette fiche ne couvre que les données NHTSA. NHTSA ne fournit ni causes, ni sol
 
 | | Fichier complet 2025-2026 | Échantillon |
 |---|---|---|
-| Lignes lues | 210 698 | – |
+| Lignes lues | 210 698 | 1 000 |
 | Plaintes | 140 271 | 996 |
 | Composants | 503 | 67 |
 | Véhicules | 7 360 | 674 |
 | Liens plainte-composant | 186 665 | 905 |
-| Liens véhicule-plainte | 140 271 | – |
+| Liens véhicule-plainte | 140 271 | 996 |
 
 Les plaintes chargées vont du 2025-01-01 au 2026-11-02.
 
