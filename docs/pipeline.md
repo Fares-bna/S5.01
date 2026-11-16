@@ -23,7 +23,7 @@ Le point d'entrée est `ingerer_nhtsa.py`. Les tests sont dans `pipeline/tests/`
 ## 1. Installer
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r pipeline/requirements.txt
 ```
@@ -57,7 +57,7 @@ Le schéma crée les tables, les index et la vue. En cas de doute : `docker comp
 python -m pytest -v
 ```
 
-Résultat attendu : tous les tests passent. Les tests de chargement utilisent un schéma temporaire dans la base ; si la base n'est pas joignable, ces tests sont ignorés (« skipped ») au lieu d'échouer.
+Résultat attendu : `19 passed` aujourd'hui. Les tests de chargement utilisent un schéma temporaire dans la base ; si la base n'est pas joignable, ces tests sont ignorés (« skipped ») au lieu d'échouer.
 
 ## 5. Charger les données
 
