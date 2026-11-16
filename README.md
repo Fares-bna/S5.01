@@ -1,61 +1,78 @@
-# Règles GitHub de l'équipe
+# DiagDuo
 
-## Branches
-- Une branche par fonctionnalité, créée depuis `main`.
-- Noms de fichiers, dossiers et branches en français, sans accents, en minuscules avec des tirets (exemple : `feat/heuristique-scores`). Exception : les fichiers Python (.py) utilisent des underscores (ex. creer_echantillon.py), car un tiret empêche de les importer.
-- `main` est protégée : pas de push direct, une Pull Request avec au moins une validation est obligatoire.
+DiagDuo aide un particulier sans connaissances en mécanique à comprendre une panne de voiture. Il choisit son véhicule, coche ses symptômes et décrit le problème en quelques mots. L'application propose des causes probables, leur niveau d'urgence et des solutions.
 
-## Commits
-Préfixes obligatoires :
-- `feat:` nouvelle fonctionnalité
-- `fix:` correction
-- `docs:` documentation
+Deux approches de recommandation sont comparées sur les mêmes données (plaintes NHTSA) :
 
-Exemple : `feat: ajoute le service de calcul des scores`
+- **Approche A, heuristique** : des règles à poids, calculés à partir de la fréquence des plaintes (voir `docs/regles_heuristique.md`).
+- **Approche B, embeddings** : comparaison du texte saisi avec le texte des plaintes.
 
-## Travail en binôme
-Chaque tâche a un responsable et un partenaire. Le partenaire relit la PR, rend son livrable (obligatoire) et la valide (Approve). La validation doit venir du partenaire de la tâche. Le responsable fusionne ensuite.
+Projet réalisé dans le cadre de la SAÉ S5.01 (BUT Informatique). Licence MIT.
 
-## Pull Requests
-Chaque PR utilise le modèle suivant (fichier `.github/pull_request_template.md`) :
+## Structure du dépôt
 
-**Tâche :**
-**Responsable :**
-**Partenaire :**
+| Dossier | Contenu |
+|---|---|
+| `api/` | Backend FastAPI (contrôleurs, services, dépôts, schémas) et fausses données (`api/mock/`) |
+| `bdd/` | Schéma PostgreSQL (`schema.sql`) et données de référence (`donnees/`) |
+| `pipeline/` | Ingestion des plaintes NHTSA (lecture, transformation, chargement) et ses tests |
+| `data/echantillon/` | Échantillon de 1000 lignes NHTSA, sans données personnelles |
+| `scripts/` | Scripts utilitaires (création de l'échantillon, liste des composants) |
+| `benchmark/` | Comparaison des deux approches |
+| `docs/` | Documentation : contrat d'API, règles de l'heuristique, règles GitHub, fiches |
 
-**Livrable du partenaire (obligatoire : cocher au moins 1 case) :**
-- [ ] Relecture écrite
-- [ ] Test écrit
-- [ ] Note d'explication
-- [ ] Refait seul une partie
-- [ ] Questions d'oral
+## Prérequis
 
-**Avant de fusionner (responsable) :**
-- [ ] Aucune donnée brute, liste de VIN, mot de passe ou `.env` dans la PR
-- [ ] Je sais expliquer chaque ligne ajoutée
+- Python 3.12 ou plus récent
+- Docker et Docker Compose
 
-**Terminé quand (toutes les cases doivent être cochées avant de fusionner) :**
-- [ ] Le travail est fini et testé
-- [ ] Le livrable du partenaire est dans la PR ou dans `docs/` (dossier du dépôt ≠ Google Doc ) 
-- [ ] Le partenaire a expliqué la tâche en 3 minutes sans aide
-- [ ] Le partenaire a validé la PR (Approve), puis le responsable fusionne
-
-## Versions
-Versionnement sémantique : `v0.1.0` pour la première version, `v1.0.0` pour la version finale.
-
-## Données
-Aucune donnée brute dans git (le fichier NHTSA fait des centaines de Mo). Les données brutes sont ignorées via le `.gitignore`.
-Exception : l'échantillon de 1000 lignes dans `data/echantillon/` (sans colonnes personnelles) est versionné.
-Secrets : `.env` est ignoré, `.env.example` est versionné. Aucune liste de VIN ni mot de passe dans git.
-
-
-
-## Installation (Ubuntu / WSL)
+## Installation
 
 ```bash
+git clone https://github.com/Fares-bna/S5.01.git
+cd S5.01
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r pipeline/requirements.txt
+cp .env.example .env
 ```
 
 Sous Ubuntu, `pip install` seul échoue (environnement géré par le système) : activer le `.venv` puis utiliser `python -m pip`.
+
+Le fichier `.env` contient les identifiants de la base. Il n'est jamais versionné.
+
+## Lancer la base de données
+
+```bash
+docker compose up -d
+docker compose exec -T db psql -U diagduo -d diagduo < bdd/schema.sql
+```
+
+La première commande lance PostgreSQL 16 dans un conteneur. La seconde crée les tables (à faire une seule fois, la base est conservée dans un volume Docker).
+
+**Mac avec Postgres.app (ou tout Postgres déjà installé)** : le port 5432 est déjà pris, et la connexion arrive sur ce Postgres local au lieu du conteneur. Mettre `POSTGRES_PORT=5433` dans `.env`, puis relancer `docker compose up -d`.
+
+## Charger les plaintes NHTSA
+
+```bash
+python -m pipeline.ingestion.ingerer_nhtsa data/echantillon/echantillon_nhtsa.csv
+```
+
+L'ingestion lit le fichier, le transforme puis charge les tables. Elle peut être relancée sans créer de doublons. Pour le fichier complet, le télécharger sur le site de la NHTSA et le placer dans `data/nhtsa/` (dossier ignoré par git) :
+
+```bash
+python -m pipeline.ingestion.ingerer_nhtsa data/nhtsa/COMPLAINTS_RECEIVED_2025-2026.txt
+```
+
+## Lancer les tests
+
+```bash
+python -m pytest -v
+```
+
+Les tests de chargement utilisent la base Docker. Si elle n'est pas lancée, ils sont ignorés (`skipped`) au lieu d'échouer.
+
+## Documentation
+
+- [Contrat d'API](docs/contrat_api.md) : routes, données échangées entre le front et le back
+- [Règles GitHub de l'équipe](docs/regles_github.md) : branches, commits, modèle de PR, versions
