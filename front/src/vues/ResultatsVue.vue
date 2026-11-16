@@ -60,9 +60,7 @@ function formaterCapitalize(texte, defaut = 'Non renseigné') {
         Résultats du diagnostic – {{ formaterCapitalize(diagnostic.vehicule?.marque) }} {{ diagnostic.vehicule?.modele }} ({{ diagnostic.vehicule?.annee || 'Année N/A' }})
       </h1>
       <p class="diag-main-subtitle">
-        <p class="diag-main-subtitle">
         Comparaison des causes, solutions recommandées et niveaux de gravité. Les pourcentages représentent un indice de correspondance indépendant pour chaque piste.
-      </p>
       </p>
     </div>
 
