@@ -4,6 +4,7 @@ import iconeVehicule from '../assets/icone-vehicule.svg'
 import iconeOutil from '../assets/icone-outil.svg'
 import iconeRappel from '../assets/icone-rappel.svg'
 import iconeGravite from '../assets/icone-gravite.svg'
+import { traduireListeComposants, formaterGravite } from '../outils/traductions'
 
 const props = defineProps({
   diagnostic: {
@@ -19,6 +20,11 @@ const props = defineProps({
 const emit = defineEmits(['nouveau-diagnostic', 'aller-performances'])
 
 const afficherExplications = ref(true)
+
+const donneesVehiculeIncompletes = computed(() => {
+  const v = props.diagnostic?.vehicule
+  return !v || v.annee === null || v.annee === undefined || v.carburant === null || v.carburant === undefined
+})
 
 const listeHeuristique = computed(() => {
   return props.diagnostic?.heuristique?.resultats || []
@@ -45,15 +51,6 @@ function formaterCapitalize(texte, defaut = 'Non renseigné') {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
 
-function formaterGravite(gravite) {
-  const libelles = {
-    faible: 'Faible',
-    moderee: 'Modérée',
-    elevee: 'Élevée',
-    critique: 'Critique'
-  }
-  return libelles[gravite] || gravite
-}
 </script>
 
 <template>
@@ -63,7 +60,9 @@ function formaterGravite(gravite) {
         Résultats du diagnostic – {{ formaterCapitalize(diagnostic.vehicule?.marque) }} {{ diagnostic.vehicule?.modele }} ({{ diagnostic.vehicule?.annee || 'Année N/A' }})
       </h1>
       <p class="diag-main-subtitle">
-        Comparaison des causes, solutions recommandées et niveaux de gravité.
+        <p class="diag-main-subtitle">
+        Comparaison des causes, solutions recommandées et niveaux de gravité. Les pourcentages représentent un indice de correspondance indépendant pour chaque piste.
+      </p>
       </p>
     </div>
 
@@ -94,6 +93,19 @@ function formaterGravite(gravite) {
         Modifier la saisie ↗
       </button>
     </div>
+    <div
+      v-if="donneesVehiculeIncompletes"
+      class="diag-alert-box diag-alert-box--danger"
+      style="margin-bottom: 1rem;"
+      role="alert"
+    >
+      <img
+        :src="iconeGravite"
+        alt=""
+        class="diag-icon-svg"
+      >
+      <span>Données incomplètes pour ce véhicule (année ou motorisation absente en base). Les résultats affichés sont indicatifs.</span>
+    </div>
 
     <div class="diag-cards-grid">
       <article class="diag-card diag-card--heuristique">
@@ -106,7 +118,7 @@ function formaterGravite(gravite) {
           <span class="diag-cause-kicker font-mono">
             CAUSE #{{ pisteHeuristique.rang || 1 }} · PISTE PRIORITAIRE
             <template v-if="pisteHeuristique.explication?.composants_correspondants?.length">
-              ({{ pisteHeuristique.explication.composants_correspondants.join(', ') }})
+              ({{ traduireListeComposants(pisteHeuristique.explication.composants_correspondants) }})
             </template>
           </span>
 
@@ -317,14 +329,14 @@ function formaterGravite(gravite) {
       >
         <div class="diag-why-col">
           <span class="diag-why-header diag-why-header--heuristique font-mono">
-            A / EXPLICATION HEURISTIQUE (REQUÊTE #{{ diagnostic.id_requete }})
+            A / EXPLICATION HEURISTIQUE (VOTRE DIAGNOSTIC)
           </span>
           <ul
             v-if="pisteHeuristique?.explication"
             class="diag-why-list font-mono"
           >
             <li v-if="pisteHeuristique.explication.composants_correspondants?.length">
-              Composants : {{ pisteHeuristique.explication.composants_correspondants.join(', ') }}
+              Composants : {{ traduireListeComposants(pisteHeuristique.explication.composants_correspondants) }}
             </li>
             <li v-if="pisteHeuristique.explication.nb_signalements !== undefined">
               Signalements NHTSA recensés : {{ pisteHeuristique.explication.nb_signalements }} cas
@@ -346,12 +358,12 @@ function formaterGravite(gravite) {
             B / SIGNALEMENTS PROCHES DE VOTRE DESCRIPTION
           </span>
           <div
-            v-for="item in listeEmbeddings.slice(0, 2)"
+            v-for="(item, index) in listeEmbeddings.slice(0, 2)"
             :key="item.id_probleme"
             class="diag-neighbor-item font-mono"
           >
             <strong>
-              Problème #{{ item.id_probleme }} ({{ item.titre }}) · Similarité {{ scoreEnPourcent(item.explication?.similarite ?? item.score) }}
+              Cause possible n°{{ item.rang || index + 1 }} ({{ item.titre }}) · Similarité {{ scoreEnPourcent(item.explication?.similarite ?? item.score) }}
             </strong>
             <p v-if="item.explication?.extrait">
               "{{ item.explication.extrait }}"

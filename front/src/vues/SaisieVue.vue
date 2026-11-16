@@ -64,14 +64,16 @@ function basculerSymptome(idSymptome) {
 
 function soumettreSaisie() {
   const texteSansEspaces = formulaire.description.replace(/\s+/g, '')
+  const aUnSymptome = formulaire.symptomesSelectionnes.length > 0
+  const aUneDescriptionValide = texteSansEspaces.length >= 3
 
   if (!formulaire.marque || !formulaire.modele || !formulaire.annee) {
     messageErreur.value = "Veuillez sélectionner une marque, un modèle et l'année du véhicule."
     return
   }
 
-  if (texteSansEspaces.length < 3) {
-    messageErreur.value = 'Veuillez décrire les symptômes (au moins 3 caractères hors espaces).'
+  if (!aUnSymptome && !aUneDescriptionValide) {
+    messageErreur.value = 'Veuillez sélectionner au moins un symptôme ou décrire la panne (au moins 3 caractères hors espaces).'
     return
   }
 
@@ -269,7 +271,7 @@ function reinitialiserFormulaire() {
 
         <div class="form-group">
           <label class="form-label">
-            Symptômes observés <span class="badge-obd">OPTIONNEL</span>
+            Symptômes observés
           </label>
           <div class="tags-container">
             <button
@@ -305,7 +307,9 @@ function reinitialiserFormulaire() {
           <label
             class="form-label"
             for="description"
-          >Description détaillée des symptômes *</label>
+          >
+            Description détaillée des symptômes 
+          </label>
           <textarea
             id="description"
             v-model="formulaire.description"
