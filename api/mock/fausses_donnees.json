@@ -49,27 +49,43 @@
   "symptomes": [
     {
       "id_symptome": 1,
-      "libelle": "Voyant de frein allumé"
+      "libelle": "La voiture démarre difficilement ou pas du tout"
     },
     {
       "id_symptome": 2,
-      "libelle": "Vibrations dans la pédale ou le volant au freinage"
+      "libelle": "Le voyant moteur est allumé"
     },
     {
       "id_symptome": 3,
-      "libelle": "Pédale de frein molle"
+      "libelle": "Perte de puissance quand j'accélère"
     },
     {
       "id_symptome": 4,
-      "libelle": "Bruit au freinage"
+      "libelle": "Bruit métallique ou grincement au freinage"
     },
     {
       "id_symptome": 5,
-      "libelle": "La voiture tire d'un côté en freinant"
+      "libelle": "La pédale de frein est molle ou s'enfonce trop"
     },
     {
       "id_symptome": 6,
-      "libelle": "Odeur de brûlé après un freinage"
+      "libelle": "La direction est dure ou fait du bruit"
+    },
+    {
+      "id_symptome": 7,
+      "libelle": "Vibrations dans le volant ou dans la voiture"
+    },
+    {
+      "id_symptome": 8,
+      "libelle": "Fumée ou odeur de brûlé"
+    },
+    {
+      "id_symptome": 9,
+      "libelle": "Le moteur chauffe (voyant de température)"
+    },
+    {
+      "id_symptome": 10,
+      "libelle": "Les vitesses passent mal (à-coups, la voiture patine)"
     }
   ],
   "problemes": [
