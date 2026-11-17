@@ -1,0 +1,6 @@
+id_cas,marque,modele,annee,carburant,boite,symptomes,description,titres_attendus
+T01,OPEL,CORSA,2019,,,Bruit au freinage,Un grincement fort quand je freine depuis une semaine,Usure des plaquettes de frein
+T02,HYUNDAI,SANTA FE,2017,,,Vibrations dans la pédale ou le volant au freinage,Le volant tremble quand je freine à vitesse élevée,Disques de frein voilés
+T03,RENAULT,CLIO,2019,essence,manuelle,Pédale de frein molle,La pédale s'enfonce presque jusqu'au plancher,Fuite de liquide de frein|Rappel : défaut du maître-cylindre de frein
+T04,PEUGEOT,208,,,,Voyant de frein allumé,Le voyant de frein reste allumé mais les freins semblent normaux,Voyant de frein allumé sans cause visible
+T05,LAND ROVER,RANGE ROVER,2016,,,La voiture tire d'un côté en freinant,La voiture part vers la droite dès que je freine,Étrier de frein grippé
