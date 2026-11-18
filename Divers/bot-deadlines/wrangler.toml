@@ -1,0 +1,19 @@
+# Configuration Cloudflare Workers du bot
+name = "bot-deadlines"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+# Base de données (tâches, membres, réglages)
+[[d1_databases]]
+binding = "DB"
+database_name = "bot-deadlines"
+database_id = "A_REMPLIR_APRES_wrangler_d1_create"
+
+# Le Worker se réveille toutes les 15 min et envoie le récap si c'est l'heure choisie
+[triggers]
+crons = ["*/15 * * * *"]
+
+# Valeurs publiques (les secrets se mettent avec : npx wrangler secret put DISCORD_TOKEN)
+[vars]
+DISCORD_APPLICATION_ID = "A_REMPLIR"
+DISCORD_PUBLIC_KEY = "A_REMPLIR"
