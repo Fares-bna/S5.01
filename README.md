@@ -49,12 +49,7 @@ cd S5.01
 python -m venv .venv
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\.venv\Scripts\Activate.ps1
-
-# Installation des dépendances (en excluant uvloop non supporté sous Windows)
-python -m pip install -r pipeline/requirements.txt python-dotenv
-Get-Content api/requirements.txt | Where-Object { $_ -notmatch '^uvloop' } | Set-Content $env:TEMP\api_req_win.txt
-python -m pip install -r $env:TEMP\api_req_win.txt
-
+python -m pip install -r pipeline/requirements.txt -r api/requirements.txt
 Copy-Item .env.example .env
 ```
 
