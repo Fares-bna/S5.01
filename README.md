@@ -19,15 +19,18 @@ Projet réalisé dans le cadre de la SAÉ S5.01 (BUT Informatique). Licence MIT.
 | `data/echantillon/` | Échantillon de 1000 lignes NHTSA, sans données personnelles |
 | `scripts/` | Scripts utilitaires (création de l'échantillon, liste des composants) |
 | `benchmark/` | Comparaison des deux approches |
+| `front/` | Application web frontend (Vite / Vue) |
 | `docs/` | Documentation : contrat d'API, règles de l'heuristique, règles GitHub, fiches |
 
 ## Prérequis
 
 - Python 3.12 ou plus récent
-- Docker et Docker Compose
+- Docker et Docker Compose (Docker Desktop sous Windows et macOS)
 - Node.js 18 ou plus récent (pour le front)
 
 ## Installation
+
+**Linux / macOS (Bash) :**
 
 ```bash
 git clone https://github.com/Fares-bna/S5.01.git
@@ -38,15 +41,41 @@ python -m pip install -r pipeline/requirements.txt -r api/requirements.txt
 cp .env.example .env
 ```
 
+**Windows (PowerShell) :**
+
+```powershell
+git clone https://github.com/Fares-bna/S5.01.git
+cd S5.01
+python -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+
+# Installation des dépendances (en excluant uvloop non supporté sous Windows)
+python -m pip install -r pipeline/requirements.txt python-dotenv
+Get-Content api/requirements.txt | Where-Object { $_ -notmatch '^uvloop' } | Set-Content $env:TEMP\api_req_win.txt
+python -m pip install -r $env:TEMP\api_req_win.txt
+
+Copy-Item .env.example .env
+```
+
 Sous Ubuntu, `pip install` seul échoue (environnement géré par le système) : activer le `.venv` puis utiliser `python -m pip`.
 
 Le fichier `.env` contient les identifiants de la base. Il n'est jamais versionné.
 
 ## Lancer la base de données
 
+**Linux / macOS (Bash) :**
+
 ```bash
 docker compose up -d
 docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < bdd/schema.sql
+```
+
+**Windows (PowerShell) :**
+
+```powershell
+docker compose up -d
+Get-Content bdd/schema.sql | docker compose exec -T db sh -c 'psql -U $POSTGRES_USER -d $POSTGRES_DB'
 ```
 
 La première commande lance PostgreSQL 16 dans un conteneur. La seconde crée les tables (à faire une seule fois, la base est conservée dans un volume Docker).
@@ -69,9 +98,18 @@ python -m pipeline.ingestion.ingerer_nhtsa data/nhtsa/COMPLAINTS_RECEIVED_2025-2
 
 L'heuristique a besoin des 15 causes et de leurs catégories de composants NHTSA. À faire une seule fois, après la création des tables :
 
+**Linux / macOS (Bash) :**
+
 ```bash
 docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "\copy cause FROM STDIN CSV HEADER"' < bdd/donnees/cause.csv
 docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "\copy cause_composant FROM STDIN CSV HEADER"' < bdd/donnees/cause_composant.csv
+```
+
+**Windows (PowerShell) :**
+
+```powershell
+@('\copy cause FROM STDIN CSV HEADER') + (Get-Content bdd/donnees/cause.csv) | docker compose exec -T db sh -c 'psql -U $POSTGRES_USER -d $POSTGRES_DB'
+@('\copy cause_composant FROM STDIN CSV HEADER') + (Get-Content bdd/donnees/cause_composant.csv) | docker compose exec -T db sh -c 'psql -U $POSTGRES_USER -d $POSTGRES_DB'
 ```
 
 Résultat attendu : `COPY 15` puis `COPY 25`.
@@ -96,6 +134,13 @@ npm run dev
 ```
 
 Le front s'ouvre sur http://localhost:5173.
+
+Pour vérifier la qualité du code et générer le build de production :
+
+```bash
+npm run lint
+npm run build
+```
 
 ## Lancer les tests
 
