@@ -45,6 +45,18 @@ Si une étape n'est pas décrite dans le README, je l'écris ici :
 
 * Les commandes front `npm run lint` et `npm run build` ne sont pas mentionnées dans le README.
 
+### Scénarios navigateur
+
+Testés sur `main` avec cette PR fusionnée (Linux, échantillon chargé, API réelle).
+
+| N° | Scénario | Attendu | Obtenu | OK |
+| ----- | ----- | ----- | ----- | ----- |
+| 10 | Ford F-150 2018, symptômes « voyant moteur » et « perte de puissance », description, puis « Lancer le double diagnostic » | Les résultats des deux approches s'affichent | Approche A en 24 ms, cause n°1 « Sonde lambda défaillante » (21 %) ; approche B affichée « indisponible » (normal à ce stade) | ☑ |
+| 11 | Déplier « Pourquoi ce diagnostic ? » | Le nombre de signalements et un extrait de plainte s'affichent | 1 signalement NHTSA, extrait de la plainte affiché | ☑ |
+| 12 | Cliquer sur « Modifier la saisie » | Retour au formulaire | Retour au formulaire, mais tous les champs sont vidés | ☑ |
+| 13 | Ford F-150 2005 (absent de la base), puis formulaire vide | Message d'erreur clair | « Aucun véhicule trouvé en base pour Ford F-150 (2005) » ; formulaire vide refusé avec le champ manquant | ☑ |
+| 14 | Onglet « 03 Performances » | Le tableau de bord s'affiche | La page s'affiche ; `GET /api/metriques` répond 404, d'où « Métriques indisponibles » | ☑ |
+
 ## 3. Propreté du dépôt
 
 | N° | Vérification | Attendu | Obtenu | OK | 
@@ -64,6 +76,9 @@ Temps entre le clonage et le site affiché : **4 min 55 s** (installation back +
 | 1 | `api/requirements.txt` impose `uvloop==0.23.0` sans condition de plateforme (`; sys_platform != "win32"`), ce qui fait échouer `pip install` sous Windows (`RuntimeError: uvloop does not support Windows at the moment`) | Étape 3 | Bloquant (sur Windows) |
 | 2 | Le README ne fournit que les commandes Bash (Linux/macOS) : activation `.venv`, redirections `< bdd/schema.sql` et `< bdd/donnees/*.csv` échouent dans PowerShell | Étapes 3 & 4 | Non bloquant (si on adapte les commandes) |
 | 3 | Le README ne mentionne pas les commandes front `npm run lint` et `npm run build` | Étapes 7 & 8 | Non bloquant |
+| 4 | « Autres pistes » affiche trois fois la même cause (« Embrayage usé ») | Scénario 10 | Non bloquant |
+| 5 | « Modifier la saisie » vide le formulaire : il faut tout ressaisir | Scénario 12 | Non bloquant |
+| 6 | La route `/api/metriques` n'existe pas encore : le tableau de bord n'affiche aucune mesure | Scénario 14 | Non bloquant |
 
 ## 6. Bilan
 
