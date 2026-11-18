@@ -82,11 +82,14 @@ Temps entre le clonage et le site affiché : **4 min 55 s** (installation back +
 
 ## 6. Bilan
 
-* **Verdict :** *À choisir après validation des scénarios navigateur 10 à 14 (prêt pour le tag v0.1.0 sous réserve de corriger `uvloop` dans `api/requirements.txt`).*
+* **Verdict :** prêt pour le tag v0.1.0. L'installation et les scénarios 10 à 14 passent, aucun défaut restant n'est bloquant.
 
-* **Correction fait avant le tag :** Ajouter `; sys_platform != "win32"` sur `uvloop` dans `api/requirements.txt` et documenter les commandes Windows + `npm run lint` / `npm run build` dans le `README.md`.
+* **Corrections faites avant le tag (dans cette PR) :** `; sys_platform != "win32"` ajouté sur `uvloop` dans `api/requirements.txt` (défaut 1), commandes Windows ajoutées au `README.md` (défaut 2), `npm run lint` et `npm run build` ajoutés au `README.md` (défaut 3).
 
-* **Points à améliorer après :** *À compléter selon les observations sur l'interface.*
+* **Points à améliorer après :**
+  * Ne pas afficher deux fois la même cause dans « Autres pistes » (défaut 4).
+  * Garder la saisie quand on clique sur « Modifier la saisie » (défaut 5).
+  * Ajouter la route `/api/metriques` pour remplir le tableau de bord (défaut 6).
 
 ## 8. Terminé quand
 
