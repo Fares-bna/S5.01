@@ -9,6 +9,8 @@ Deux approches de recommandation sont comparées sur les mêmes données (plaint
 
 Projet réalisé dans le cadre de la SAÉ S5.01 (BUT Informatique). Licence MIT.
 
+Dépôt GitHub : https://github.com/Fares-bna/S5.01
+
 ## Structure du dépôt
 
 | Dossier | Contenu |
