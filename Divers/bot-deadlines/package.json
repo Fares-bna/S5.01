@@ -1,0 +1,18 @@
+{
+  "name": "bot-deadlines",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bot Discord de suivi des tâches et deadlines de la SAÉ S5.01",
+  "license": "MIT",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deployer": "wrangler deploy",
+    "commandes": "node scripts/enregistrer-commandes.js",
+    "base": "wrangler d1 execute bot-deadlines --remote --file=schema.sql",
+    "remplir": "wrangler d1 execute bot-deadlines --remote --file=donnees.sql"
+  },
+  "devDependencies": {
+    "wrangler": "4.155.0"
+  }
+}

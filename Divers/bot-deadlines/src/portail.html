@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Portail SAÉ S5</title>
+<style>
+  :root {
+    --fond: #f1f1f1;
+    --carte: #ffffff;
+    --texte: #303030;
+    --doux: #616161;
+    --bordure: #e3e3e3;
+    --survol: #f7f7f7;
+    --primaire: #303030;
+    --primaire-survol: #1a1a1a;
+    --vert: #29845a;
+    --vert-fond: #cdfee1;
+    --bleu: #005bd3;
+    --bleu-fond: #e0f0ff;
+    --gris-fond: #ebebeb;
+    --rouge: #c70a24;
+    --rouge-fond: #fee9e8;
+    --jaune: #8a6116;
+    --jaune-fond: #fff1c2;
+    --ombre: 0 1px 0 rgba(26,26,26,.07), 0 1px 3px rgba(26,26,26,.12);
+    --rayon: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fond: #1a1a1a; --carte: #262626; --texte: #e3e3e3; --doux: #a8a8a8; --bordure: #3a3a3a; --survol: #2f2f2f;
+      --primaire: #e3e3e3; --primaire-survol: #ffffff;
+      --vert: #4fd394; --vert-fond: #12382a; --bleu: #7fb6ff; --bleu-fond: #10284a; --gris-fond: #333333;
+      --rouge: #ff8a80; --rouge-fond: #4a1515; --jaune: #ffd479; --jaune-fond: #3d3110;
+      --ombre: 0 1px 0 rgba(0,0,0,.3), 0 1px 3px rgba(0,0,0,.4);
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fond); color: var(--texte); font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  [hidden] { display: none !important; }
+
+  /* Mise en page */
+  .app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+  nav { padding: 16px 10px; border-right: 1px solid var(--bordure); background: var(--fond); position: sticky; top: 0; height: 100vh; }
+  .marque { font-weight: 650; font-size: 15px; padding: 4px 10px 16px; }
+  .marque small { display: block; font-weight: 400; color: var(--doux); font-size: 12px; }
+  nav a { display: block; padding: 7px 10px; border-radius: 8px; color: var(--texte); text-decoration: none; font-weight: 500; margin-bottom: 2px; }
+  nav a:hover { background: var(--gris-fond); }
+  nav a.actif { background: var(--carte); box-shadow: var(--ombre); }
+  nav .bas { position: absolute; bottom: 16px; left: 10px; right: 10px; }
+  main { padding: 24px 28px 48px; max-width: 1100px; width: 100%; }
+  h1 { font-size: 20px; font-weight: 650; margin: 0; }
+  .entete { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .sous-titre { color: var(--doux); margin-top: 2px; }
+
+  .carte { background: var(--carte); border-radius: var(--rayon); box-shadow: var(--ombre); padding: 16px; margin-bottom: 16px; }
+  .carte h2 { font-size: 14px; font-weight: 650; margin: 0 0 12px; }
+  .grille { display: grid; gap: 16px; }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+  .g2 { grid-template-columns: 1fr 1fr; }
+  .chiffre { font-size: 26px; font-weight: 650; margin-top: 4px; }
+  .etiquette { color: var(--doux); font-size: 13px; }
+
+  /* Boutons et champs */
+  .btn { border: 0; border-radius: 8px; padding: 6px 12px; font-weight: 550; cursor: pointer; background: var(--carte); box-shadow: var(--ombre), inset 0 -1px 0 rgba(0,0,0,.06); }
+  .btn:hover { background: var(--survol); }
+  .btn.primaire { background: var(--primaire); color: var(--fond); box-shadow: none; }
+  .btn.primaire:hover { background: var(--primaire-survol); }
+  .btn.danger { color: var(--rouge); }
+  .btn.lien { background: none; box-shadow: none; padding: 4px 6px; color: var(--bleu); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  label { display: block; font-weight: 500; margin-bottom: 4px; }
+  .champ { margin-bottom: 14px; }
+  .aide { color: var(--doux); font-size: 12px; margin-top: 4px; }
+  input[type=text], input[type=password], input[type=date], input[type=time], input[type=number], select, textarea {
+    width: 100%; border: 1px solid #8a8a8a55; border-radius: 8px; padding: 6px 10px; background: var(--carte); min-height: 34px;
+  }
+  textarea { min-height: 120px; resize: vertical; }
+  input:focus, select:focus, textarea:focus, .btn:focus-visible { outline: 2px solid var(--bleu); outline-offset: 1px; }
+  .ligne-champs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* Badges */
+  .badge { display: inline-flex; align-items: center; gap: 5px; border-radius: 8px; padding: 1px 8px; font-size: 12px; font-weight: 550; white-space: nowrap; }
+  .badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .b-a_faire { background: var(--gris-fond); color: var(--doux); }
+  .b-en_cours { background: var(--bleu-fond); color: var(--bleu); }
+  .b-termine { background: var(--vert-fond); color: var(--vert); }
+  .b-retard { background: var(--rouge-fond); color: var(--rouge); }
+  .b-jalon { background: var(--jaune-fond); color: var(--jaune); }
+  .b-rendu { background: var(--rouge-fond); color: var(--rouge); }
+
+  /* Tableau */
+  .filtres { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .filtres > * { width: auto; flex: 0 1 auto; }
+  .filtres input[type=text] { flex: 1 1 180px; }
+  .tableau { width: 100%; border-collapse: collapse; }
+  .tableau th { text-align: left; font-weight: 550; color: var(--doux); font-size: 12px; padding: 8px; border-bottom: 1px solid var(--bordure); background: var(--survol); }
+  .tableau td { padding: 10px 8px; border-bottom: 1px solid var(--bordure); vertical-align: middle; }
+  .tableau tr:last-child td { border-bottom: 0; }
+  .tableau tbody tr:hover { background: var(--survol); }
+  .tableau .id { color: var(--doux); font-variant-numeric: tabular-nums; }
+  .tableau .titre { font-weight: 550; }
+  .tableau .desc { color: var(--doux); font-size: 12px; max-width: 360px; }
+  .tableau select { width: auto; min-height: 28px; padding: 2px 6px; }
+  .carte.sans-marge { padding: 0; overflow-x: auto; }
+  .vide { color: var(--doux); padding: 24px; text-align: center; }
+
+  /* Barres de progression */
+  .barre { height: 8px; border-radius: 4px; background: var(--gris-fond); overflow: hidden; }
+  .barre > span { display: block; height: 100%; background: var(--vert); }
+  .ligne-barre { display: grid; grid-template-columns: 90px 1fr 60px; gap: 10px; align-items: center; margin-bottom: 10px; }
+  .ligne-barre .etiquette:last-child { text-align: right; }
+  .liste { list-style: none; margin: 0; padding: 0; }
+  .liste li { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--bordure); }
+  .liste li:last-child { border-bottom: 0; }
+
+  /* Panneau latéral */
+  .voile { position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 10; }
+  .panneau { position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100%); background: var(--carte); z-index: 11; padding: 20px; overflow-y: auto; box-shadow: -4px 0 20px rgba(0,0,0,.15); }
+  .panneau .entete { margin-bottom: 16px; }
+  .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+  .actions .gauche { margin-right: auto; }
+
+  /* Connexion */
+  .connexion { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+  .connexion .carte { width: min(360px, 100%); padding: 24px; }
+
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--primaire); color: var(--fond); padding: 10px 16px; border-radius: 10px; z-index: 20; font-weight: 500; }
+  .toast.erreur { background: var(--rouge); color: #fff; }
+  .apercu { white-space: pre-wrap; word-break: break-word; background: var(--survol); border-radius: 8px; padding: 12px; min-height: 60px; border: 1px solid var(--bordure); }
+  .puces { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .interrupteur { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--bordure); }
+  .interrupteur:last-child { border-bottom: 0; }
+  .interrupteur input { width: 18px; height: 18px; }
+
+  @media (max-width: 800px) {
+    .app { grid-template-columns: 1fr; }
+    nav { position: static; height: auto; display: flex; gap: 4px; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--bordure); padding: 10px 16px; }
+    .marque, nav .bas { display: none; }
+    nav a { white-space: nowrap; margin: 0; }
+    main { padding: 16px; }
+    .g4 { grid-template-columns: 1fr 1fr; }
+    .g2, .ligne-champs { grid-template-columns: 1fr; }
+    .masquer-mobile { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Écran de connexion -->
+<div class="connexion" id="ecran-connexion" hidden>
+  <form class="carte" id="form-connexion">
+    <h1>Portail SAÉ S5</h1>
+    <p class="sous-titre" style="margin-bottom:20px">Tâches et deadlines du groupe</p>
+    <div class="champ">
+      <label for="mdp">Mot de passe</label>
+      <input type="password" id="mdp" autocomplete="current-password" required>
+    </div>
+    <p id="erreur-connexion" class="aide" style="color:var(--rouge)" hidden></p>
+    <button class="btn primaire" style="width:100%">Se connecter</button>
+  </form>
+</div>
+
+<!-- Application -->
+<div class="app" id="ecran-app" hidden>
+  <nav>
+    <div class="marque">SAÉ S5.01<small>Tâches et deadlines</small></div>
+    <a href="#tableau" data-page="tableau">Tableau de bord</a>
+    <a href="#taches" data-page="taches">Tâches</a>
+    <a href="#message" data-page="message">Message</a>
+    <a href="#reglages" data-page="reglages">Réglages</a>
+    <div class="bas"><button class="btn lien" id="btn-deconnexion">Se déconnecter</button></div>
+  </nav>
+  <main id="contenu"></main>
+</div>
+
+<!-- Panneau d'ajout / modification d'une tâche -->
+<div class="voile" id="voile" hidden></div>
+<aside class="panneau" id="panneau" hidden>
+  <form id="form-tache">
+    <div class="entete"><h1 id="titre-panneau">Nouvelle tâche</h1><button type="button" class="btn lien" data-fermer>Fermer</button></div>
+    <div class="champ"><label for="t-titre">Titre</label><input type="text" id="t-titre" maxlength="200" required></div>
+    <div class="champ"><label for="t-description">Description</label><textarea id="t-description" maxlength="1000" style="min-height:80px"></textarea></div>
+    <div class="ligne-champs">
+      <div class="champ"><label for="t-responsable">Responsable</label><select id="t-responsable"></select></div>
+      <div class="champ"><label for="t-partenaire">Partenaire</label><select id="t-partenaire"></select></div>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ"><label for="t-debut">Début</label><input type="date" id="t-debut"></div>
+      <div class="champ"><label for="t-fin">Fin</label><input type="date" id="t-fin" required></div>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ"><label for="t-type">Type</label><select id="t-type"></select></div>
+      <div class="champ"><label for="t-etape">Étape</label><select id="t-etape"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+    </div>
+    <div class="champ" id="champ-statut"><label for="t-statut">Statut</label><select id="t-statut"></select></div>
+    <div class="actions">
+      <button type="button" class="btn danger gauche" id="btn-supprimer" hidden>Supprimer</button>
+      <button type="button" class="btn" data-fermer>Annuler</button>
+      <button class="btn primaire" id="btn-enregistrer">Enregistrer</button>
+    </div>
+  </form>
+</aside>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+'use strict';
+
+// ---------- État ----------
+let D = null;          // données reçues de /api/donnees
+let salons = null;     // salons Discord (chargés à la demande)
+let tacheEditee = null;
+const filtres = { recherche: '', personne: '', statut: '', etape: '', terminees: false };
+
+// ---------- Outils ----------
+const $ = sel => document.querySelector(sel);
+// Échappe le texte avant de l'insérer dans la page (les titres viennent des utilisateurs)
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fr = iso => iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}` : '—';
+const ecart = (a, b) => Math.round((Date.parse(b + 'T12:00:00Z') - Date.parse(a + 'T12:00:00Z')) / 86400000);
+const ajouter = (iso, n) => { const d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const libelle = (dico, cle) => (dico[cle] || cle).replace(/^\S+\s/, ''); // enlève l'émoji : "🟦 En cours" -> "En cours"
+const enRetard = t => t.statut !== 'termine' && ecart(D.aujourdhui, t.fin) < 0;
+
+async function api(chemin, options = {}) {
+  const rep = await fetch('/api/' + chemin, {
+    method: options.method || 'GET',
+    headers: options.corps ? { 'Content-Type': 'application/json' } : {},
+    body: options.corps ? JSON.stringify(options.corps) : undefined,
+    credentials: 'same-origin'
+  });
+  const donnees = await rep.json().catch(() => ({}));
+  if (rep.status === 401 && chemin !== 'connexion') { afficherConnexion(); throw new Error('Session expirée'); }
+  if (!rep.ok) throw new Error(donnees.erreur || 'Erreur ' + rep.status);
+  return donnees;
+}
+
+let minuteur;
+function toast(texte, erreur = false) {
+  const t = $('#toast');
+  t.textContent = texte; t.className = 'toast' + (erreur ? ' erreur' : ''); t.hidden = false;
+  clearTimeout(minuteur); minuteur = setTimeout(() => t.hidden = true, 3000);
+}
+
+function badgeStatut(t) {
+  if (t.type !== 'tache') return `<span class="badge b-${t.type}">${esc(libelle(D.types, t.type))}</span>`;
+  if (enRetard(t)) return `<span class="badge b-retard">En retard</span>`;
+  return `<span class="badge b-${t.statut}">${esc(libelle(D.statuts, t.statut))}</span>`;
+}
+const qui = t => [t.responsable, t.partenaire].filter(Boolean).map(esc).join(' / ') || 'Tout le monde';
+const dates = t => t.debut ? `${fr(t.debut)} → ${fr(t.fin)}` : fr(t.fin);
+
+// ---------- Connexion ----------
+function afficherConnexion() {
+  $('#ecran-app').hidden = true; $('#ecran-connexion').hidden = false; $('#mdp').focus();
+}
+
+$('#form-connexion').addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = $('#erreur-connexion'); err.hidden = true;
+  try {
+    await api('connexion', { method: 'POST', corps: { mot_de_passe: $('#mdp').value } });
+    $('#mdp').value = '';
+    await demarrer();
+  } catch (ex) { err.textContent = ex.message; err.hidden = false; }
+});
+
+$('#btn-deconnexion').addEventListener('click', async () => {
+  await api('deconnexion', { method: 'POST', corps: {} }).catch(() => {});
+  afficherConnexion();
+});
+
+async function charger() { D = await api('donnees'); }
+
+async function demarrer() {
+  try { await charger(); } catch { return; }
+  $('#ecran-connexion').hidden = true; $('#ecran-app').hidden = false;
+  afficherPage();
+}
+
+// ---------- Navigation ----------
+const PAGES = { tableau: pageTableau, taches: pageTaches, message: pageMessage, reglages: pageReglages };
+function afficherPage() {
+  const nom = PAGES[location.hash.slice(1)] ? location.hash.slice(1) : 'tableau';
+  document.querySelectorAll('nav a').forEach(a => a.classList.toggle('actif', a.dataset.page === nom));
+  PAGES[nom]();
+}
+window.addEventListener('hashchange', () => D && afficherPage());
+
+// ---------- Tableau de bord ----------
+function pageTableau() {
+  const j = D.aujourdhui, taches = D.taches.filter(t => t.type === 'tache');
+  const finSemaine = ajouter(j, 6);
+  const retards = taches.filter(enRetard);
+  const semaine = taches.filter(t => t.statut !== 'termine' && t.fin >= j && t.fin <= finSemaine);
+  const enCours = taches.filter(t => t.statut === 'en_cours');
+  const finies = taches.filter(t => t.statut === 'termine');
+  const rendus = D.taches.filter(t => t.type !== 'tache' && t.fin >= j).slice(0, 4);
+
+  const etapes = [...new Set(taches.map(t => t.etape).filter(Boolean))].sort();
+  const progression = etapes.map(e => {
+    const l = taches.filter(t => t.etape === e), f = l.filter(t => t.statut === 'termine').length;
+    return `<div class="ligne-barre"><span class="etiquette">Étape ${e}</span><div class="barre"><span style="width:${Math.round(100 * f / l.length)}%"></span></div><span class="etiquette">${f} / ${l.length}</span></div>`;
+  }).join('');
+
+  const charge = D.membres.map(m => {
+    const l = taches.filter(t => t.statut !== 'termine' && t.responsable === m.prenom && (t.debut ?? t.fin) <= finSemaine);
+    return { prenom: m.prenom, n: l.length, retard: l.filter(enRetard).length };
+  }).sort((a, b) => b.n - a.n);
+
+  $('#contenu').innerHTML = `
+    <div class="entete"><div><h1>Tableau de bord</h1><div class="sous-titre">${new Date(j + 'T12:00:00Z').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
+      <button class="btn primaire" id="btn-ajout-rapide">Ajouter une tâche</button></div>
+    <div class="grille g4">
+      <div class="carte"><div class="etiquette">En retard</div><div class="chiffre" style="color:${retards.length ? 'var(--rouge)' : 'inherit'}">${retards.length}</div></div>
+      <div class="carte"><div class="etiquette">À rendre cette semaine</div><div class="chiffre">${semaine.length}</div></div>
+      <div class="carte"><div class="etiquette">En cours</div><div class="chiffre">${enCours.length}</div></div>
+      <div class="carte"><div class="etiquette">Terminées</div><div class="chiffre">${finies.length}<span class="etiquette"> / ${taches.length}</span></div></div>
+    </div>
+    <div class="grille g2">
+      <div class="carte"><h2>Prochaines échéances</h2>
+        <ul class="liste">${rendus.map(t => `<li><span>${badgeStatut(t)} ${esc(t.titre)}</span><span class="etiquette">${fr(t.fin)} · ${ecart(j, t.fin) === 0 ? "aujourd'hui" : 'dans ' + ecart(j, t.fin) + ' j'}</span></li>`).join('') || '<li class="etiquette">Aucune</li>'}</ul>
+      </div>
+      <div class="carte"><h2>Avancement par étape</h2>${progression || '<p class="etiquette">Aucune tâche</p>'}</div>
+    </div>
+    <div class="grille g2">
+      <div class="carte"><h2>En retard</h2>
+        <ul class="liste">${retards.map(t => `<li><span><span class="id">#${t.id}</span> ${esc(t.titre)}<br><span class="etiquette">${qui(t)}</span></span><span class="etiquette">${-ecart(j, t.fin)} j</span></li>`).join('') || '<li class="etiquette">Rien en retard 🎉</li>'}</ul>
+      </div>
+      <div class="carte"><h2>Charge cette semaine (responsable)</h2>
+        <ul class="liste">${charge.map(c => `<li><span>${esc(c.prenom)}</span><span class="etiquette">${c.n} tâche${c.n > 1 ? 's' : ''}${c.retard ? ` · <span style="color:var(--rouge)">${c.retard} en retard</span>` : ''}</span></li>`).join('')}</ul>
+      </div>
+    </div>`;
+  $('#btn-ajout-rapide').onclick = () => ouvrirPanneau(null);
+}
+
+// ---------- Tâches ----------
+function pageTaches() {
+  const options = (dico, vide) => `<option value="">${vide}</option>` + Object.keys(dico).map(k => `<option value="${k}">${esc(libelle(dico, k))}</option>`).join('');
+  $('#contenu').innerHTML = `
+    <div class="entete"><div><h1>Tâches</h1><div class="sous-titre" id="compte"></div></div><button class="btn primaire" id="btn-ajout">Ajouter une tâche</button></div>
+    <div class="filtres">
+      <input type="text" id="f-recherche" placeholder="Rechercher">
+      <select id="f-personne"><option value="">Tout le monde</option>${D.membres.map(m => `<option>${esc(m.prenom)}</option>`).join('')}</select>
+      <select id="f-statut">${options(D.statuts, 'Tous les statuts')}</select>
+      <select id="f-etape"><option value="">Toutes les étapes</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      <label style="display:flex;align-items:center;gap:6px;margin:0;font-weight:400"><input type="checkbox" id="f-terminees"> Afficher les terminées</label>
+    </div>
+    <div class="carte sans-marge"><table class="tableau"><thead><tr>
+      <th>#</th><th>Tâche</th><th>Statut</th><th class="masquer-mobile">Dates</th><th class="masquer-mobile">Qui</th><th></th>
+    </tr></thead><tbody id="lignes"></tbody></table></div>`;
+
+  for (const [id, cle] of [['f-recherche', 'recherche'], ['f-personne', 'personne'], ['f-statut', 'statut'], ['f-etape', 'etape']]) {
+    const el = $('#' + id); el.value = filtres[cle];
+    el.addEventListener('input', () => { filtres[cle] = el.value; remplirTaches(); });
+  }
+  const c = $('#f-terminees'); c.checked = filtres.terminees;
+  c.addEventListener('change', () => { filtres.terminees = c.checked; remplirTaches(); });
+  $('#btn-ajout').onclick = () => ouvrirPanneau(null);
+  remplirTaches();
+}
+
+function remplirTaches() {
+  const r = filtres.recherche.trim().toLowerCase();
+  const liste = D.taches.filter(t =>
+    (!r || t.titre.toLowerCase().includes(r) || (t.description || '').toLowerCase().includes(r)) &&
+    (!filtres.personne || t.responsable === filtres.personne || t.partenaire === filtres.personne) &&
+    (!filtres.statut || t.statut === filtres.statut) &&
+    (!filtres.etape || String(t.etape) === filtres.etape) &&
+    (filtres.terminees || filtres.statut === 'termine' || t.statut !== 'termine'));
+  $('#compte').textContent = `${liste.length} tâche${liste.length > 1 ? 's' : ''}`;
+  $('#lignes').innerHTML = liste.map(t => `
+    <tr data-id="${t.id}">
+      <td class="id">${t.id}</td>
+      <td><div class="titre">${esc(t.titre)}</div>${t.description ? `<div class="desc">${esc(t.description)}</div>` : ''}</td>
+      <td>${t.type === 'tache'
+        ? `<select data-statut aria-label="Statut">${Object.keys(D.statuts).map(k => `<option value="${k}" ${k === t.statut ? 'selected' : ''}>${esc(libelle(D.statuts, k))}</option>`).join('')}</select> ${enRetard(t) ? '<span class="badge b-retard">En retard</span>' : ''}`
+        : badgeStatut(t)}</td>
+      <td class="masquer-mobile">${dates(t)}</td>
+      <td class="masquer-mobile">${qui(t)}</td>
+      <td><button class="btn lien" data-modifier>Modifier</button></td>
+    </tr>`).join('') || `<tr><td colspan="6" class="vide">Aucune tâche</td></tr>`;
+
+  $('#lignes').querySelectorAll('tr[data-id]').forEach(tr => {
+    const id = Number(tr.dataset.id);
+    tr.querySelector('[data-modifier]').onclick = () => ouvrirPanneau(D.taches.find(t => t.id === id));
+    const sel = tr.querySelector('[data-statut]');
+    if (sel) sel.onchange = async () => {
+      try {
+        await api('taches/' + id, { method: 'PATCH', corps: { statut: sel.value } });
+        await charger(); remplirTaches(); toast('Statut mis à jour');
+      } catch (e) { toast(e.message, true); }
+    };
+  });
+}
+
+// ---------- Panneau tâche ----------
+function ouvrirPanneau(t) {
+  tacheEditee = t;
+  const membres = '<option value="">—</option>' + D.membres.map(m => `<option>${esc(m.prenom)}</option>`).join('');
+  $('#t-responsable').innerHTML = membres; $('#t-partenaire').innerHTML = membres;
+  $('#t-type').innerHTML = Object.keys(D.types).map(k => `<option value="${k}">${esc(libelle(D.types, k))}</option>`).join('');
+  $('#t-statut').innerHTML = Object.keys(D.statuts).map(k => `<option value="${k}">${esc(libelle(D.statuts, k))}</option>`).join('');
+  $('#titre-panneau').textContent = t ? `Modifier la tâche #${t.id}` : 'Nouvelle tâche';
+  $('#t-titre').value = t?.titre ?? '';
+  $('#t-description').value = t?.description ?? '';
+  $('#t-responsable').value = t?.responsable ?? '';
+  $('#t-partenaire').value = t?.partenaire ?? '';
+  $('#t-debut').value = t?.debut ?? '';
+  $('#t-fin').value = t?.fin ?? '';
+  $('#t-type').value = t?.type ?? 'tache';
+  $('#t-etape').value = t?.etape ?? '';
+  $('#t-statut').value = t?.statut ?? 'a_faire';
+  $('#btn-supprimer').hidden = !t;
+  $('#btn-supprimer').textContent = 'Supprimer';
+  $('#voile').hidden = false; $('#panneau').hidden = false;
+  $('#t-titre').focus();
+}
+function fermerPanneau() { $('#voile').hidden = true; $('#panneau').hidden = true; tacheEditee = null; }
+document.querySelectorAll('[data-fermer]').forEach(b => b.onclick = fermerPanneau);
+$('#voile').onclick = fermerPanneau;
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#panneau').hidden) fermerPanneau(); });
+
+$('#form-tache').addEventListener('submit', async e => {
+  e.preventDefault();
+  const corps = {
+    titre: $('#t-titre').value, description: $('#t-description').value,
+    responsable: $('#t-responsable').value, partenaire: $('#t-partenaire').value,
+    debut: $('#t-debut').value, fin: $('#t-fin').value,
+    type: $('#t-type').value, etape: $('#t-etape').value, statut: $('#t-statut').value
+  };
+  const btn = $('#btn-enregistrer'); btn.disabled = true;
+  try {
+    if (tacheEditee) await api('taches/' + tacheEditee.id, { method: 'PATCH', corps });
+    else await api('taches', { method: 'POST', corps });
+    toast(tacheEditee ? 'Tâche modifiée' : 'Tâche ajoutée');
+    fermerPanneau(); await charger(); afficherPage();
+  } catch (ex) { toast(ex.message, true); }
+  btn.disabled = false;
+});
+
+// Suppression en deux clics (pas de fenêtre de confirmation du navigateur)
+$('#btn-supprimer').addEventListener('click', async () => {
+  const btn = $('#btn-supprimer');
+  if (btn.textContent === 'Supprimer') { btn.textContent = 'Confirmer la suppression'; return; }
+  try {
+    await api('taches/' + tacheEditee.id, { method: 'DELETE' });
+    toast('Tâche supprimée'); fermerPanneau(); await charger(); afficherPage();
+  } catch (ex) { toast(ex.message, true); }
+});
+
+// ---------- Message au nom du bot ----------
+async function chargerSalons() {
+  if (!salons) salons = await api('salons');
+  return salons;
+}
+
+async function pageMessage() {
+  $('#contenu').innerHTML = `
+    <div class="entete"><div><h1>Message</h1><div class="sous-titre">Le message est posté par le bot, ton nom n'apparaît pas.</div></div></div>
+    <div class="grille g2">
+      <form class="carte" id="form-message">
+        <div class="champ"><label for="m-salon">Salon</label><select id="m-salon" required><option value="">Chargement…</option></select></div>
+        <div class="champ"><label for="m-texte">Message</label><textarea id="m-texte" maxlength="4000" required></textarea>
+          <div class="aide">Mentionner quelqu'un :</div>
+          <div class="puces">${D.membres.filter(m => m.discord_id).map(m => `<button type="button" class="btn" data-mention="${esc(m.discord_id)}">@${esc(m.prenom)}</button>`).join('')}</div>
+          <div class="aide">Les @everyone et @here sont bloqués. Gras : **texte**, italique : *texte*.</div>
+        </div>
+        <div class="actions"><button class="btn primaire" id="btn-envoyer">Envoyer en tant que bot</button></div>
+      </form>
+      <div class="carte"><h2>Aperçu</h2><div class="apercu" id="m-apercu"></div></div>
+    </div>`;
+
+  const zone = $('#m-texte');
+  const apercu = () => {
+    const noms = Object.fromEntries(D.membres.filter(m => m.discord_id).map(m => [m.discord_id, m.prenom]));
+    $('#m-apercu').textContent = zone.value.replace(/<@!?(\d+)>/g, (x, id) => '@' + (noms[id] || id));
+  };
+  zone.addEventListener('input', apercu);
+  document.querySelectorAll('[data-mention]').forEach(b => b.onclick = () => {
+    const insertion = `<@${b.dataset.mention}> `, p = zone.selectionStart ?? zone.value.length;
+    zone.value = zone.value.slice(0, p) + insertion + zone.value.slice(zone.selectionEnd ?? p);
+    zone.focus(); zone.selectionStart = zone.selectionEnd = p + insertion.length; apercu();
+  });
+
+  try {
+    const liste = await chargerSalons();
+    $('#m-salon').innerHTML = '<option value="">Choisir un salon</option>' + liste.map(s => `<option value="${esc(s.id)}">#${esc(s.nom)}</option>`).join('');
+    if (D.config.salon) $('#m-salon').value = D.config.salon;
+  } catch (e) { $('#m-salon').innerHTML = '<option value="">Impossible de charger les salons</option>'; toast(e.message, true); }
+
+  $('#form-message').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = $('#btn-envoyer'); btn.disabled = true;
+    try {
+      await api('message', { method: 'POST', corps: { salon: $('#m-salon').value, contenu: zone.value } });
+      zone.value = ''; apercu(); toast('Message envoyé');
+    } catch (ex) { toast(ex.message, true); }
+    btn.disabled = false;
+  });
+}
+
+// ---------- Réglages ----------
+const RAPPELS = {
+  rappel_retard: 'En retard', rappel_jour: "À rendre aujourd'hui", rappel_veille: 'À rendre demain',
+  rappel_j3: 'Fin dans 3 jours (règle J-3)', rappel_debut: "Tâche qui commence aujourd'hui",
+  rappel_jalon_j1: 'Jalon / rendu prof demain', rappel_jalon_j7: 'Jalon / rendu prof dans 7 jours', recap_hebdo: 'Récap de la semaine le lundi'
+};
+
+async function pageReglages() {
+  const c = D.config;
+  $('#contenu').innerHTML = `
+    <div class="entete"><div><h1>Réglages</h1><div class="sous-titre">Les mêmes que /config sur Discord.</div></div></div>
+    <div class="grille g2">
+      <div class="carte"><h2>Récap quotidien</h2>
+        <div class="champ"><label for="r-heure">Heure (heure de Paris)</label><input type="time" id="r-heure" value="${esc(c.heure)}"><div class="aide">Envoyé à 15 min près.</div></div>
+        <div class="champ"><label for="r-salon">Salon</label><select id="r-salon"><option value="">Chargement…</option></select><div class="aide">Sans salon, aucun rappel n'est envoyé.</div></div>
+      </div>
+      <div class="carte"><h2>Rappels</h2>
+        ${Object.entries(RAPPELS).map(([cle, nom]) => `<label class="interrupteur" style="font-weight:400;margin:0"><span>${esc(nom)}</span><input type="checkbox" data-rappel="${cle}" ${c[cle] === 'oui' ? 'checked' : ''}></label>`).join('')}
+      </div>
+    </div>
+    <div class="carte"><h2>Membres</h2>
+      <p class="aide" style="margin-top:-6px">L'identifiant Discord sert à mentionner la personne. Clic droit sur son nom dans Discord, puis « Copier l'identifiant » (mode développeur activé).</p>
+      <table class="tableau"><thead><tr><th>Prénom</th><th>Identifiant Discord</th><th></th></tr></thead>
+      <tbody>${D.membres.map(m => `<tr><td>${esc(m.prenom)}</td><td><input type="text" inputmode="numeric" value="${esc(m.discord_id ?? '')}" data-membre="${esc(m.prenom)}"></td><td><button class="btn" data-enregistrer-membre="${esc(m.prenom)}">Enregistrer</button></td></tr>`).join('')}</tbody></table>
+    </div>`;
+
+  const sauver = async (cle, valeur) => {
+    try { await api('config', { method: 'PUT', corps: { cle, valeur } }); D.config[cle] = valeur; toast('Réglage enregistré'); }
+    catch (e) { toast(e.message, true); }
+  };
+  $('#r-heure').addEventListener('change', e => sauver('heure', e.target.value));
+  document.querySelectorAll('[data-rappel]').forEach(i => i.addEventListener('change', () => sauver(i.dataset.rappel, i.checked ? 'oui' : 'non')));
+  document.querySelectorAll('[data-enregistrer-membre]').forEach(b => b.onclick = async () => {
+    const prenom = b.dataset.enregistrerMembre;
+    const champ = [...document.querySelectorAll('[data-membre]')].find(i => i.dataset.membre === prenom);
+    try { await api('membres', { method: 'PUT', corps: { prenom, discord_id: champ.value } }); await charger(); toast('Membre enregistré'); }
+    catch (e) { toast(e.message, true); }
+  });
+
+  try {
+    const liste = await chargerSalons();
+    const sel = $('#r-salon');
+    sel.innerHTML = '<option value="">Aucun</option>' + liste.map(s => `<option value="${esc(s.id)}">#${esc(s.nom)}</option>`).join('');
+    sel.value = c.salon || '';
+    sel.addEventListener('change', () => sauver('salon', sel.value));
+  } catch (e) { $('#r-salon').innerHTML = '<option value="">Impossible de charger les salons</option>'; }
+}
+
+demarrer();
+</script>
+</body>
+</html>
