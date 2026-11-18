@@ -22,30 +22,35 @@ const catalogueVehicules = {
 
 const listeMarques = Object.keys(catalogueVehicules)
 const listeSymptomesDisponibles = ref([])
+const erreurSymptomes = ref(false)
 const messageErreur = ref('')
 
-const formulaire = reactive({
-  marque: '',
-  modele: '',
-  annee: null,
-  carburant: '',
-  boite: '',
-  kilometrage: null,
-  codeObd: '',
-  description: '',
-  symptomesSelectionnes: []
-})
+function creerFormulaireVide() {
+  return {
+    marque: '',
+    modele: '',
+    annee: null,
+    carburant: '',
+    boite: '',
+    kilometrage: null,
+    codeObd: '',
+    description: '',
+    symptomesSelectionnes: []
+  }
+}
+
+const formulaire = reactive(creerFormulaireVide())
 
 onMounted(async () => {
   try {
     listeSymptomesDisponibles.value = await getSymptomes()
   } catch {
     listeSymptomesDisponibles.value = []
+    erreurSymptomes.value = true
   }
 })
 
 const modelesDisponibles = computed(() => {
-  if (!formulaire.marque) return []
   return catalogueVehicules[formulaire.marque] || []
 })
 
@@ -63,17 +68,16 @@ function basculerSymptome(idSymptome) {
 }
 
 function soumettreSaisie() {
-  const texteSansEspaces = formulaire.description.replace(/\s+/g, '')
-  const aUnSymptome = formulaire.symptomesSelectionnes.length > 0
-  const aUneDescriptionValide = texteSansEspaces.length >= 3
+  // même règle que l'api : 3 caractères minimum sans les espaces au début et à la fin
+  const descriptionNettoyee = formulaire.description.trim()
 
   if (!formulaire.marque || !formulaire.modele || !formulaire.annee) {
     messageErreur.value = "Veuillez sélectionner une marque, un modèle et l'année du véhicule."
     return
   }
 
-  if (!aUnSymptome && !aUneDescriptionValide) {
-    messageErreur.value = 'Veuillez sélectionner au moins un symptôme ou décrire la panne (au moins 3 caractères hors espaces).'
+  if (descriptionNettoyee.length < 3) {
+    messageErreur.value = 'Veuillez décrire la panne en quelques mots (au moins 3 caractères).'
     return
   }
 
@@ -87,21 +91,13 @@ function soumettreSaisie() {
     boite: formulaire.boite || null,
     kilometrage: formulaire.kilometrage,
     codeObd: formulaire.codeObd.trim(),
-    description: formulaire.description.trim(),
+    description: descriptionNettoyee,
     symptomes: [...formulaire.symptomesSelectionnes]
   })
 }
 
 function reinitialiserFormulaire() {
-  formulaire.marque = ''
-  formulaire.modele = ''
-  formulaire.annee = null
-  formulaire.carburant = ''
-  formulaire.boite = ''
-  formulaire.kilometrage = null
-  formulaire.codeObd = ''
-  formulaire.description = ''
-  formulaire.symptomesSelectionnes = []
+  Object.assign(formulaire, creerFormulaireVide())
   messageErreur.value = ''
 }
 </script>
@@ -285,6 +281,12 @@ function reinitialiserFormulaire() {
               {{ item.libelle }}
             </button>
           </div>
+          <p
+            v-if="erreurSymptomes"
+            class="alert-error"
+          >
+            Impossible de charger la liste des symptômes. Vous pouvez quand même décrire la panne ci-dessous.
+          </p>
         </div>
 
         <div class="form-group">
@@ -308,7 +310,7 @@ function reinitialiserFormulaire() {
             class="form-label"
             for="description"
           >
-            Description détaillée des symptômes 
+            Description détaillée des symptômes <span class="badge-obd">OBLIGATOIRE</span>
           </label>
           <textarea
             id="description"

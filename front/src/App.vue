@@ -2,12 +2,11 @@
 import { ref } from 'vue'
 import SaisieVue from './vues/SaisieVue.vue'
 import ResultatsVue from './vues/ResultatsVue.vue'
-import { rechercherVehicules, obtenirRecommandations } from './services/api'
+import DashboardVue from './vues/DashboardVue.vue'
+import { rechercherVehicules, obtenirRecommandations, messagePourUtilisateur, UTILISER_MOCK } from './services/api'
 import logoUrl from './assets/logo.svg'
 
-
 // Variables pour gérer la navigation et stocker les résultats
-
 const etapes = ['01 Saisie', '02 Diagnostic', '03 Performances']
 const etapeActive = ref(0)
 const derniereSaisie = ref(null)
@@ -15,30 +14,39 @@ const donneesDiagnostic = ref(null)
 const chargementEnCours = ref(false)
 const erreurApi = ref('')
 
+// l'api peut renvoyer plusieurs véhicules pour un même modèle (motorisations différentes)
+// on prend celui qui a la bonne année et le bon carburant, sinon la bonne année, sinon le premier
+function choisirVehicule(vehicules, saisie) {
+  const memeAnneeEtCarburant = vehicules.find(
+    (v) => v.annee === saisie.annee && v.carburant === saisie.carburant
+  )
+  const memeAnnee = vehicules.find((v) => v.annee === saisie.annee)
+
+  return memeAnneeEtCarburant || memeAnnee || vehicules[0]
+}
+
 async function gererDiagnostic(donnees) {
   derniereSaisie.value = donnees
   chargementEnCours.value = true
   erreurApi.value = ''
 
   try {
-    // On cherche le véhicule dans fausses_donnees.json (via api.js) pour récupérer l'id_vehicule.
+    // On cherche le véhicule en base pour récupérer son id_vehicule
     const vehiculesTrouves = await rechercherVehicules({
       marque: donnees.marque,
       modele: donnees.modele,
-      annee: donnees.annee,
-      carburant: donnees.carburant,
-      boite: donnees.boite
+      annee: donnees.annee
     })
 
-    // Là, si le véhicule n'est pas dans les données (en base), on affiche une erreur
-    if (!vehiculesTrouves || vehiculesTrouves.length === 0) {
+    // Là, si le véhicule n'est pas en base, on affiche une erreur
+    if (vehiculesTrouves.length === 0) {
       erreurApi.value = `Aucun véhicule trouvé en base pour ${donnees.marque} ${donnees.modele} (${donnees.annee}). Veuillez vérifier les informations saisies.`
       return
     }
 
-    const vehiculeRetenu = vehiculesTrouves[0]
+    const vehiculeRetenu = choisirVehicule(vehiculesTrouves, donnees)
 
-    // Ici, on récupère  les résultats des deux approches (heuristique et embeddings)
+    // Ici, on récupère les résultats des deux approches (heuristique et embeddings)
     const resultat = await obtenirRecommandations({
       id_vehicule: vehiculeRetenu.id_vehicule,
       description: donnees.description,
@@ -47,23 +55,38 @@ async function gererDiagnostic(donnees) {
       symptomes: donnees.symptomes
     })
 
-    // On stocke le résultat et on bascule sur la vue des résultats
-    donneesDiagnostic.value = resultat
+    // la réponse de l'api ne contient pas le véhicule donc on le rajoute pour l'affichage
+    // (le carburant et la boîte saisis remplacent les valeurs souvent vides de la NHTSA)
+    donneesDiagnostic.value = {
+      ...resultat,
+      vehicule: {
+        ...vehiculeRetenu,
+        carburant: donnees.carburant || vehiculeRetenu.carburant,
+        boite: donnees.boite || vehiculeRetenu.boite
+      }
+    }
     etapeActive.value = 1
   } catch (err) {
-    erreurApi.value = err.message || 'Une erreur est survenue lors du diagnostic.'
+    console.error(err)
+    erreurApi.value = messagePourUtilisateur(err)
   } finally {
     chargementEnCours.value = false
   }
 }
 
-// C'est ici juste ce qui permet de revenir au formulaire quand on clique sur "Modifier la saisie" on repasse à l'étape 0 et on vide l'erreur éventuelle
+// Permet de revenir au formulaire quand on clique sur "Modifier la saisie"
 function retourSaisie() {
   etapeActive.value = 0
   erreurApi.value = ''
 }
+
+// changement d'étape avec le menu, on enlève l'erreur affichée
+function changerEtape(index) {
+  etapeActive.value = index
+  erreurApi.value = ''
+}
 </script>
- <!-- A partir d'ici, c'est  le layout de l'application (la navigation, le logo, le titre, etc.) -->
+
 <template>
   <header class="app-header">
     <div class="brand-container">
@@ -78,6 +101,11 @@ function retourSaisie() {
         </p>
         <span class="brand-slogan">Deux diagnostics valent mieux qu'un</span>
       </div>
+      <span
+        v-if="UTILISER_MOCK"
+        class="badge-mode-demo font-mono"
+        title="Fausses données (VITE_USE_MOCK=true)"
+      >DONNÉES FICTIVES</span>
     </div>
 
     <nav class="stepper-nav">
@@ -87,7 +115,8 @@ function retourSaisie() {
         type="button"
         class="stepper-btn"
         :class="{ active: etapeActive === index }"
-        @click="etapeActive = index"
+        :disabled="chargementEnCours"
+        @click="changerEtape(index)"
       >
         {{ etape }}
       </button>
@@ -150,55 +179,11 @@ function retourSaisie() {
       </section>
     </template>
 
-    <!-- Etape 3 (Dashboard / Benchmark / Performances) -->
-    <section
+    <!-- Etape 3 : Dashboard / Benchmark / Performances -->
+    <DashboardVue
       v-else
-      class="card-atelier"
-    >
-      <span class="step-badge">ÉTAPE 03 — BENCHMARK</span>
-      <h1 class="page-title">
-        Performances des moteurs
-      </h1>
-      <p class="page-subtitle">
-        Synthèse comparative des deux approches sur le dernier diagnostic exécuté.
-      </p>
-
-      <div
-        v-if="donneesDiagnostic"
-        class="vehicule-summary-banner"
-      >
-        <div class="summary-item">
-          <span class="summary-label">Pistes Heuristiques</span>
-          <strong class="summary-value font-mono">
-            {{ donneesDiagnostic.heuristique?.nb_resultats || 0 }} résultat(s)
-          </strong>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">Temps Heuristique</span>
-          <strong class="summary-value font-mono">
-            {{ donneesDiagnostic.heuristique?.temps_calcul_ms || 'N/A' }} ms
-          </strong>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">Pistes Embeddings (IA)</span>
-          <strong class="summary-value font-mono">
-            {{ donneesDiagnostic.embeddings?.nb_resultats || 0 }} résultat(s)
-          </strong>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">Temps Embeddings</span>
-          <strong class="summary-value font-mono">
-            {{ donneesDiagnostic.embeddings?.temps_calcul_ms || 'N/A' }} ms
-          </strong>
-        </div>
-      </div>
-
-      <p
-        v-else
-        class="page-subtitle"
-      >
-        Lancez un diagnostic à l'étape 01 pour afficher les métriques comparatives.
-      </p>
-    </section>
+      :dernier-diagnostic="donneesDiagnostic"
+      @retour-diagnostic="changerEtape(1)"
+    />
   </main>
 </template>

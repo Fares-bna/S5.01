@@ -647,6 +647,26 @@ body {
   color: var(--text-acier-patine);
 }
 
+.marge-basse-alerte {
+  margin-bottom: 16px;
+}
+
+.diag-why-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icone-chevron-accordeon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.15s ease;
+}
+
+.icone-chevron-ouvert {
+  transform: rotate(90deg);
+}
+
 @media (max-width: 860px) {
   .form-grid-3,
   .diag-cards-grid,
@@ -654,4 +674,20 @@ body {
   .vehicule-summary-banner {
     grid-template-columns: 1fr;
   }
+}
+/* Badge mode démo (fausses données) */
+.badge-mode-demo {
+  margin-left: 12px;
+  padding: 3px 8px;
+  border: 1px solid var(--color-ambre-obd);
+  border-radius: 4px;
+  background-color: var(--color-halo-ambre);
+  color: var(--color-ambre-obd);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.stepper-btn:disabled {
+  cursor: wait;
+  opacity: 0.6;
 }

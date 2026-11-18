@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import Chart from 'chart.js/auto'
 import '../styles/dashboard.css'
-import { getMetriques } from '../services/api'
+import { getMetriques, messagePourUtilisateur, UTILISER_MOCK } from '../services/api'
 
 import iconeCible from '../assets/icone-cible.svg'
 import iconeHorloge from '../assets/icone-horloge.svg'
@@ -286,9 +286,9 @@ async function chargerMetriques() {
 
   try {
     donneesMetriques.value = await getMetriques()
-  } catch {
+  } catch (erreur) {
     donneesMetriques.value = null
-    erreurMetriques.value = 'Impossible de récupérer les métriques.'
+    erreurMetriques.value = messagePourUtilisateur(erreur)
   } finally {
     chargementMetriques.value = false
   }
@@ -628,7 +628,8 @@ onBeforeUnmount(detruireGraphiques)
 
     <footer class="mentions-bas-benchmark">
       <span>NHTSA · Jeu de test commun aux deux approches</span>
-      <span>Valeurs fictives (fausses_donnees.json)</span>
+      <span v-if="UTILISER_MOCK">Valeurs fictives (mode démo)</span>
+      <span v-else>Temps mesurés par l'API à chaque diagnostic</span>
     </footer>
   </div>
 </template>
