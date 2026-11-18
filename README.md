@@ -25,6 +25,7 @@ Projet réalisé dans le cadre de la SAÉ S5.01 (BUT Informatique). Licence MIT.
 
 - Python 3.12 ou plus récent
 - Docker et Docker Compose
+- Node.js 18 ou plus récent (pour le front)
 
 ## Installation
 
@@ -33,7 +34,7 @@ git clone https://github.com/Fares-bna/S5.01.git
 cd S5.01
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r pipeline/requirements.txt
+python -m pip install -r pipeline/requirements.txt -r api/requirements.txt
 cp .env.example .env
 ```
 
@@ -64,6 +65,38 @@ L'ingestion lit le fichier, le transforme puis charge les tables. Elle peut êtr
 python -m pipeline.ingestion.ingerer_nhtsa data/nhtsa/COMPLAINTS_RECEIVED_2025-2026.txt
 ```
 
+## Charger les causes
+
+L'heuristique a besoin des 15 causes et de leurs catégories de composants NHTSA. À faire une seule fois, après la création des tables :
+
+```bash
+docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "\copy cause FROM STDIN CSV HEADER"' < bdd/donnees/cause.csv
+docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "\copy cause_composant FROM STDIN CSV HEADER"' < bdd/donnees/cause_composant.csv
+```
+
+Résultat attendu : `COPY 15` puis `COPY 25`.
+
+## Lancer l'API
+
+```bash
+cd api
+uvicorn app.main:app --reload
+```
+
+L'API répond sur http://localhost:8000. La page http://localhost:8000/docs permet d'essayer les routes depuis le navigateur, et http://localhost:8000/health vérifie que l'API fonctionne.
+
+## Lancer le front
+
+Dans un second terminal :
+
+```bash
+cd front
+npm install
+npm run dev
+```
+
+Le front s'ouvre sur http://localhost:5173.
+
 ## Lancer les tests
 
 ```bash
@@ -71,6 +104,13 @@ python -m pytest -v
 ```
 
 Les tests de chargement utilisent la base Docker. Si elle n'est pas lancée, ils sont ignorés (`skipped`) au lieu d'échouer.
+
+Les tests de l'API se lancent depuis le dossier `api/`. Ils ont besoin de la base lancée, avec les plaintes et les causes chargées :
+
+```bash
+cd api
+python -m pytest -v
+```
 
 ## Documentation
 
