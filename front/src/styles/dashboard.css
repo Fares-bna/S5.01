@@ -1,0 +1,361 @@
+@import './tokens.css';
+
+.conteneur-page-benchmark {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: var(--font-body);
+  color: var(--text-noir-carbone);
+}
+
+.en-tete-benchmark {
+  margin-bottom: 4px;
+}
+
+.titre-principal-benchmark {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px 0;
+}
+
+.sous-titre-principal-benchmark {
+  font-size: 15px;
+  color: var(--text-ardoise);
+  margin: 0;
+}
+
+/* Utilitaires de couleur Approche A / Approche B */
+.texte-marine {
+  color: var(--color-marine-heuristique);
+}
+
+.texte-emeraude {
+  color: var(--color-emeraude);
+}
+
+.fond-marine {
+  background-color: var(--color-marine-heuristique);
+}
+
+.fond-emeraude {
+  background-color: var(--color-emeraude);
+}
+
+/* Cartes KPI */
+.grille-indicateurs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.carte-indicateur {
+  background-color: var(--bg-ivoire-fiche);
+  border: 1px solid var(--border-filet-calibre);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.en-tete-carte-indicateur {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.titre-indicateur {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-acier-trempe);
+}
+
+.icone-indicateur {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.chiffre-cle-principal {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+
+.duel-valeurs-indicateur {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 12px;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.bloc-valeur-approche {
+  display: flex;
+  flex-direction: column;
+}
+
+.valeur-approche {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.sous-etiquette-approche {
+  font-size: 11px;
+  color: var(--text-gris-jauge);
+  margin-top: 4px;
+}
+
+.separateur-vs {
+  font-size: 12px;
+  color: var(--text-gris-jauge);
+}
+
+.note-bas-indicateur {
+  font-size: 12px;
+  color: var(--text-ardoise);
+  margin-top: 8px;
+}
+
+/* Panneaux Graphiques */
+.grille-graphiques {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.panneau-accent-vert,
+.panneau-tableau-recap {
+  background-color: var(--bg-ivoire-fiche);
+  border: 1px solid var(--border-filet-calibre);
+  border-top: 3px solid var(--color-emeraude);
+  border-radius: 8px;
+}
+
+.panneau-accent-vert {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.titre-panneau {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.sous-titre-panneau {
+  font-size: 12px;
+  color: var(--text-ardoise);
+  margin: 0 0 20px 0;
+}
+
+.legende-graphique {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: var(--text-ardoise);
+}
+
+.element-legende {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pastille-legende {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.conteneur-canvas-graphique,
+.conteneur-canvas-scalabilite {
+  position: relative;
+  width: 100%;
+}
+
+.conteneur-canvas-graphique {
+  height: 210px;
+  margin-bottom: 16px;
+}
+
+.conteneur-canvas-scalabilite {
+  height: 175px;
+  margin-bottom: 12px;
+}
+
+.pied-note-latence {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 14px;
+  margin-top: auto;
+  border-top: 1px solid var(--border-filet-calibre);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-acier-trempe);
+}
+
+.icone-eclair-latence {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+.bloc-formules-complexite {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-graphite);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+.ligne-formule-complexite {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.note-scalabilite {
+  font-size: 11px;
+  color: var(--text-gris-jauge);
+  margin: auto 0 0 0;
+}
+
+/* Tableau récapitulatif */
+.panneau-tableau-recap {
+  overflow: hidden;
+}
+
+.en-tete-tableau-recap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+}
+
+.badge-meta-tableau {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-acier-patine);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.conteneur-scroll-tableau {
+  overflow-x: auto;
+}
+
+.tableau-performances {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.tableau-performances thead tr {
+  background-color: var(--bg-creme-benchmark);
+  border-top: 1px solid var(--border-filet-calibre);
+  border-bottom: 1px solid var(--border-filet-calibre);
+}
+
+.tableau-performances th {
+  padding: 14px 24px;
+  font-weight: 500;
+  color: var(--text-acier-trempe);
+  font-size: 12px;
+}
+
+.tableau-performances td {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-filet-calibre);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.nom-methode {
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+
+.cellule-valeur {
+  font-weight: 500;
+}
+
+.mentions-bas-benchmark {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-gris-jauge);
+}
+
+.badge-donnee-manquante {
+  background-color: var(--color-halo-carmin);
+  color: var(--color-carmin-nhtsa);
+  border: 1px solid var(--color-carmin-nhtsa);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-align: center;
+  display: inline-block;
+}
+
+
+/* Bandeau d'erreur des métriques */
+.bandeau-erreur-metriques {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Panneau dernier diagnostic */
+.panneau-dernier-diagnostic {
+  background-color: var(--bg-ivoire-fiche);
+  border: 1px solid var(--border-filet-calibre);
+  border-top: 3px solid var(--color-marine-heuristique);
+  border-radius: 8px;
+}
+
+.panneau-dernier-diagnostic > .sous-titre-panneau {
+  padding: 0 24px 20px;
+  margin: 0;
+}
+
+.grille-dernier-diagnostic {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 0 24px 20px;
+}
+
+.bloc-dernier-diagnostic {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+@media (max-width: 860px) {
+  .grille-indicateurs,
+  .grille-graphiques,
+  .grille-dernier-diagnostic {
+    grid-template-columns: 1fr;
+  }
+}

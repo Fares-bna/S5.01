@@ -23,25 +23,17 @@ const afficherExplications = ref(true)
 
 const donneesVehiculeIncompletes = computed(() => {
   const v = props.diagnostic?.vehicule
-  return !v || v.annee === null || v.annee === undefined || v.carburant === null || v.carburant === undefined
+  return !v || v.annee == null || v.carburant == null
 })
 
-const listeHeuristique = computed(() => {
-  return props.diagnostic?.heuristique?.resultats || []
-})
-
-const listeEmbeddings = computed(() => {
-  return props.diagnostic?.embeddings?.resultats || []
-})
-
-const tempsHeuristique = computed(() => props.diagnostic?.heuristique?.temps_calcul_ms ?? null)
-const tempsEmbeddings = computed(() => props.diagnostic?.embeddings?.temps_calcul_ms ?? null)
+const listeHeuristique = computed(() => props.diagnostic?.heuristique?.resultats || [])
+const listeEmbeddings = computed(() => props.diagnostic?.embeddings?.resultats || [])
 
 const pisteHeuristique = computed(() => listeHeuristique.value[0] || null)
 const pisteEmbeddings = computed(() => listeEmbeddings.value[0] || null)
 
 function scoreEnPourcent(score) {
-  if (score === null || score === undefined) return 'N/A'
+  if (score == null) return 'N/A'
   return `${Math.round(Number(score) * 100)}%`
 }
 
@@ -51,6 +43,56 @@ function formaterCapitalize(texte, defaut = 'Non renseigné') {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
 
+// les plaintes NHTSA n'ont pas de titre (l'api renvoie le début du texte en anglais)
+// donc on affiche le nom de la cause en français comme sur la maquette
+function titrePiste(piste) {
+  return piste?.explication?.libelle_cause || piste?.titre || ''
+}
+
+function determinerMessageVide(blocMoteur, nomMoteur) {
+  if (!blocMoteur || blocMoteur.temps_calcul_ms === null) {
+    return `Le moteur ${nomMoteur} est temporairement indisponible.`
+  }
+  return `Aucune piste retournée par le moteur ${nomMoteur}.`
+}
+
+const cartesMoteurs = computed(() => [
+  {
+    cle: 'heuristique',
+    banniere: '[Approche A - Heuristique]',
+    temps: props.diagnostic?.heuristique?.temps_calcul_ms ?? null,
+    estIndisponible: props.diagnostic?.heuristique?.temps_calcul_ms === null,
+    piste: pisteHeuristique.value,
+    autresPistes: listeHeuristique.value.slice(1),
+    titreAutres: 'AUTRES PISTES HEURISTIQUES',
+    composants: pisteHeuristique.value?.explication?.composants_correspondants?.length
+      ? traduireListeComposants(pisteHeuristique.value.explication.composants_correspondants)
+      : '',
+    legendeScore: pisteHeuristique.value?.explication?.nb_signalements
+      ? `Score calculé sur les règles actives (${pisteHeuristique.value.explication.nb_signalements} signalements correspondants)`
+      : 'Score calculé sur les règles actives',
+    // on garde quand même l'extrait de la plainte sous le score
+    signalement: pisteHeuristique.value?.explication?.libelle_cause ? pisteHeuristique.value.titre : '',
+    libelleRappel: 'RAPPEL CONSTRUCTEUR OFFICIEL',
+    messageVide: determinerMessageVide(props.diagnostic?.heuristique, 'heuristique')
+  },
+  {
+    cle: 'embeddings',
+    banniere: '[Approche B - Embeddings]',
+    temps: props.diagnostic?.embeddings?.temps_calcul_ms ?? null,
+    estIndisponible: props.diagnostic?.embeddings?.temps_calcul_ms === null,
+    piste: pisteEmbeddings.value,
+    autresPistes: listeEmbeddings.value.slice(1),
+    titreAutres: 'AUTRES PISTES EMBEDDINGS',
+    composants: '',
+    legendeScore: pisteEmbeddings.value
+      ? `Correspondance avec les pannes similaires signalées (${scoreEnPourcent(pisteEmbeddings.value.explication?.similarite ?? pisteEmbeddings.value.score)})`
+      : '',
+    signalement: '',
+    libelleRappel: 'RAPPEL CONSTRUCTEUR OFFICIEL EXISTANT',
+    messageVide: determinerMessageVide(props.diagnostic?.embeddings, 'embeddings')
+  }
+])
 </script>
 
 <template>
@@ -91,10 +133,10 @@ function formaterCapitalize(texte, defaut = 'Non renseigné') {
         Modifier la saisie ↗
       </button>
     </div>
+
     <div
       v-if="donneesVehiculeIncompletes"
       class="diag-alert-box diag-alert-box--danger"
-      style="margin-bottom: 1rem;"
       role="alert"
     >
       <img
@@ -106,40 +148,55 @@ function formaterCapitalize(texte, defaut = 'Non renseigné') {
     </div>
 
     <div class="diag-cards-grid">
-      <article class="diag-card diag-card--heuristique">
-        <div class="diag-method-banner diag-method-banner--heuristique font-mono">
-          <span>[Approche A - Heuristique]</span>
-          <span v-if="tempsHeuristique !== null">{{ tempsHeuristique }} ms</span>
+      <article
+        v-for="moteur in cartesMoteurs"
+        :key="moteur.cle"
+        class="diag-card"
+        :class="`diag-card--${moteur.cle}`"
+      >
+        <div
+          class="diag-method-banner font-mono"
+          :class="`diag-method-banner--${moteur.cle}`"
+        >
+          <span>{{ moteur.banniere }}</span>
+          <span v-if="moteur.temps !== null">{{ moteur.temps }} ms</span>
         </div>
 
-        <template v-if="pisteHeuristique">
+        <template v-if="moteur.piste">
           <span class="diag-cause-kicker font-mono">
-            CAUSE #{{ pisteHeuristique.rang || 1 }} · PISTE PRIORITAIRE
-            <template v-if="pisteHeuristique.explication?.composants_correspondants?.length">
-              ({{ traduireListeComposants(pisteHeuristique.explication.composants_correspondants) }})
+            CAUSE #{{ moteur.piste.rang || 1 }} · PISTE PRIORITAIRE
+            <template v-if="moteur.composants">
+              ({{ moteur.composants }})
             </template>
           </span>
 
           <div class="diag-title-score-row">
             <h2 class="diag-cause-title">
-              {{ pisteHeuristique.titre }}
+              {{ titrePiste(moteur.piste) }}
             </h2>
-            <span class="diag-big-score diag-big-score--heuristique font-mono">
-              {{ scoreEnPourcent(pisteHeuristique.score) }}
+            <span
+              class="diag-big-score font-mono"
+              :class="`diag-big-score--${moteur.cle}`"
+            >
+              {{ scoreEnPourcent(moteur.piste.score) }}
             </span>
           </div>
 
           <p class="diag-score-caption">
-            Score calculé sur les règles actives
-            <template v-if="pisteHeuristique.explication?.nb_signalements">
-              ({{ pisteHeuristique.explication.nb_signalements }} signalements correspondants)
-            </template>
+            {{ moteur.legendeScore }}
+          </p>
+
+          <p
+            v-if="moteur.signalement"
+            class="diag-score-caption"
+          >
+            Plainte NHTSA : « {{ moteur.signalement }} »
           </p>
 
           <hr class="diag-divider">
 
           <div
-            v-if="pisteHeuristique.solutions?.length"
+            v-if="moteur.piste.solutions?.length"
             class="diag-control-block"
           >
             <span class="diag-control-kicker">PREMIER CONTRÔLE RECOMMANDÉ</span>
@@ -149,15 +206,15 @@ function formaterCapitalize(texte, defaut = 'Non renseigné') {
                 alt=""
                 class="diag-icon-svg"
               >
-              <span>{{ pisteHeuristique.solutions[0].libelle }}</span>
+              <span>{{ moteur.piste.solutions[0].libelle }}</span>
             </p>
             <span class="diag-control-level">
-              {{ pisteHeuristique.solutions[0].description }}
+              {{ moteur.piste.solutions[0].description }}
             </span>
           </div>
 
           <div
-            v-if="pisteHeuristique.type_probleme === 'rappel'"
+            v-if="moteur.piste.type_probleme === 'rappel'"
             class="diag-alert-box diag-alert-box--danger"
           >
             <img
@@ -165,11 +222,11 @@ function formaterCapitalize(texte, defaut = 'Non renseigné') {
               alt=""
               class="diag-icon-svg"
             >
-            <span>RAPPEL CONSTRUCTEUR OFFICIEL (Gravité : {{ formaterGravite(pisteHeuristique.gravite) }})</span>
+            <span>{{ moteur.libelleRappel }} (Gravité : {{ formaterGravite(moteur.piste.gravite) }})</span>
           </div>
 
           <div
-            v-else-if="pisteHeuristique.gravite"
+            v-else-if="moteur.piste.gravite"
             class="diag-alert-box"
           >
             <img
@@ -177,21 +234,21 @@ function formaterCapitalize(texte, defaut = 'Non renseigné') {
               alt=""
               class="diag-icon-svg"
             >
-            <span>Gravité : {{ formaterGravite(pisteHeuristique.gravite) }} (Type : {{ pisteHeuristique.type_probleme }})</span>
+            <span>Gravité : {{ formaterGravite(moteur.piste.gravite) }} (Type : {{ moteur.piste.type_probleme }})</span>
           </div>
 
           <div
-            v-if="listeHeuristique.length > 1"
+            v-if="moteur.autresPistes.length"
             class="diag-secondary-list"
           >
-            <span class="diag-control-kicker">AUTRES PISTES HEURISTIQUES ({{ listeHeuristique.length - 1 }})</span>
+            <span class="diag-control-kicker">{{ moteur.titreAutres }} ({{ moteur.autresPistes.length }})</span>
             <div
-              v-for="item in listeHeuristique.slice(1)"
+              v-for="item in moteur.autresPistes"
               :key="item.id_probleme"
               class="diag-secondary-item"
             >
               <span>
-                #{{ item.rang }} · {{ item.titre }}
+                #{{ item.rang }} · {{ titrePiste(item) }}
                 <strong
                   v-if="item.type_probleme === 'rappel'"
                   class="badge-rappel-inline font-mono"
@@ -205,106 +262,9 @@ function formaterCapitalize(texte, defaut = 'Non renseigné') {
         <div
           v-else
           class="diag-empty-card"
+          :class="{ 'diag-alert-box--danger': moteur.estIndisponible }"
         >
-          Aucune piste retournée par le moteur heuristique.
-        </div>
-      </article>
-
-      <article class="diag-card diag-card--embeddings">
-        <div class="diag-method-banner diag-method-banner--embeddings font-mono">
-          <span>[Approche B - Embeddings]</span>
-          <span v-if="tempsEmbeddings !== null">{{ tempsEmbeddings }} ms</span>
-        </div>
-
-        <template v-if="pisteEmbeddings">
-          <span class="diag-cause-kicker font-mono">
-            CAUSE #{{ pisteEmbeddings.rang || 1 }} · PISTE PRIORITAIRE
-          </span>
-
-          <div class="diag-title-score-row">
-            <h2 class="diag-cause-title">
-              {{ pisteEmbeddings.titre }}
-            </h2>
-            <span class="diag-big-score diag-big-score--embeddings font-mono">
-              {{ scoreEnPourcent(pisteEmbeddings.score) }}
-            </span>
-          </div>
-
-          <p class="diag-score-caption">
-            Correspondance avec les pannes similaires signalées ({{ scoreEnPourcent(pisteEmbeddings.explication?.similarite ?? pisteEmbeddings.score) }})
-          </p>
-
-          <hr class="diag-divider">
-
-          <div
-            v-if="pisteEmbeddings.solutions?.length"
-            class="diag-control-block"
-          >
-            <span class="diag-control-kicker">PREMIER CONTRÔLE RECOMMANDÉ</span>
-            <p class="diag-control-action">
-              <img
-                :src="iconeOutil"
-                alt=""
-                class="diag-icon-svg"
-              >
-              <span>{{ pisteEmbeddings.solutions[0].libelle }}</span>
-            </p>
-            <span class="diag-control-level">
-              {{ pisteEmbeddings.solutions[0].description }}
-            </span>
-          </div>
-
-          <div
-            v-if="pisteEmbeddings.type_probleme === 'rappel'"
-            class="diag-alert-box diag-alert-box--danger"
-          >
-            <img
-              :src="iconeRappel"
-              alt=""
-              class="diag-icon-svg"
-            >
-            <span>RAPPEL CONSTRUCTEUR OFFICIEL EXISTANT (Gravité : {{ formaterGravite(pisteEmbeddings.gravite) }})</span>
-          </div>
-
-          <div
-            v-else-if="pisteEmbeddings.gravite"
-            class="diag-alert-box"
-          >
-            <img
-              :src="iconeGravite"
-              alt=""
-              class="diag-icon-svg"
-            >
-            <span>Gravité : {{ formaterGravite(pisteEmbeddings.gravite) }} (Type : {{ pisteEmbeddings.type_probleme }})</span>
-          </div>
-
-          <div
-            v-if="listeEmbeddings.length > 1"
-            class="diag-secondary-list"
-          >
-            <span class="diag-control-kicker">AUTRES PISTES EMBEDDINGS ({{ listeEmbeddings.length - 1 }})</span>
-            <div
-              v-for="item in listeEmbeddings.slice(1)"
-              :key="item.id_probleme"
-              class="diag-secondary-item"
-            >
-              <span>
-                #{{ item.rang }} · {{ item.titre }}
-                <strong
-                  v-if="item.type_probleme === 'rappel'"
-                  class="badge-rappel-inline font-mono"
-                >[RAPPEL]</strong>
-              </span>
-              <strong class="font-mono">{{ scoreEnPourcent(item.score) }}</strong>
-            </div>
-          </div>
-        </template>
-
-        <div
-          v-else
-          class="diag-empty-card"
-        >
-          Aucune piste retournée par le moteur embeddings.
+          {{ moteur.messageVide }}
         </div>
       </article>
     </div>
@@ -361,7 +321,7 @@ function formaterCapitalize(texte, defaut = 'Non renseigné') {
             class="diag-neighbor-item font-mono"
           >
             <strong>
-              Cause possible n°{{ item.rang || index + 1 }} ({{ item.titre }}) · Similarité {{ scoreEnPourcent(item.explication?.similarite ?? item.score) }}
+              Cause possible n°{{ item.rang || index + 1 }} ({{ titrePiste(item) }}) · Similarité {{ scoreEnPourcent(item.explication?.similarite ?? item.score) }}
             </strong>
             <p v-if="item.explication?.extrait">
               "{{ item.explication.extrait }}"
@@ -380,10 +340,10 @@ function formaterCapitalize(texte, defaut = 'Non renseigné') {
     >
       <strong>Conclusion commune</strong>
       <p v-if="pisteHeuristique.id_probleme === pisteEmbeddings.id_probleme">
-        Convergence : Les deux approches identifient la même cause prioritaire (<strong>{{ pisteHeuristique.titre }}</strong> — {{ pisteHeuristique.solutions?.[0]?.libelle }}).
+        Convergence : Les deux approches identifient la même cause prioritaire (<strong>{{ titrePiste(pisteHeuristique) }}</strong> — {{ pisteHeuristique.solutions?.[0]?.libelle }}).
       </p>
       <p v-else>
-        Pistes complémentaires : L'approche heuristique priorise <strong>{{ pisteHeuristique.titre }}</strong> ({{ scoreEnPourcent(pisteHeuristique.score) }}) tandis que l'approche vectorielle met en avant <strong>{{ pisteEmbeddings.titre }}</strong> ({{ scoreEnPourcent(pisteEmbeddings.score) }}).
+        Pistes complémentaires : L'approche heuristique priorise <strong>{{ titrePiste(pisteHeuristique) }}</strong> ({{ scoreEnPourcent(pisteHeuristique.score) }}) tandis que l'approche vectorielle met en avant <strong>{{ titrePiste(pisteEmbeddings) }}</strong> ({{ scoreEnPourcent(pisteEmbeddings.score) }}).
       </p>
     </div>
 
