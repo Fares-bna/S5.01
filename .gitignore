@@ -3,3 +3,6 @@ data/nhtsa/
 .vscode/
 .env
 __pycache__/
+node_modules/
+dist/
+.env.local

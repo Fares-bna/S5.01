@@ -1,0 +1,693 @@
+@import './tokens.css';
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-papier-atelier);
+  color: var(--text-noir-carbone);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.app-header {
+  background-color: var(--bg-sauge-chassis);
+  border-bottom: 1px solid var(--border-jointure-sauge);
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo-icon {
+  height: 32px;
+  width: auto;
+}
+
+.brand-logo {
+  font-family: var(--font-brand);
+  font-weight: 800;
+  font-size: 25px;
+  letter-spacing: -1px;
+  margin: 0;
+}
+
+.brand-logo span {
+  color: var(--color-emeraude);
+}
+
+.brand-slogan {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--text-ardoise);
+  font-style: italic;
+  letter-spacing: 0.2px;
+  margin-top: 2px;
+}
+
+.stepper-nav {
+  display: flex;
+  gap: 16px;
+}
+
+.stepper-btn {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-acier-patine);
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+.stepper-btn.active {
+  color: var(--color-emeraude);
+  font-weight: 700;
+  border-bottom-color: var(--color-emeraude);
+}
+
+.page-container {
+  max-width: 1120px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.card-atelier {
+  background-color: var(--bg-ivoire-fiche);
+  border: 1px solid var(--border-filet-calibre);
+  border-top: 3px solid var(--color-emeraude);
+  border-radius: 8px;
+  padding: 28px;
+}
+
+.card-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-filet-calibre);
+}
+
+.step-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-emeraude);
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.page-title {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+  color: var(--text-ardoise);
+  margin: 0;
+}
+
+.form-atelier {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-graphite);
+  margin: 0;
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-acier-trempe);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge-obd {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  background-color: var(--color-halo-ambre);
+  color: var(--color-ambre-obd);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  background-color: var(--bg-papier-atelier);
+  border: 1px solid var(--border-filet-calibre);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-noir-carbone);
+  transition: border-color 0.15s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-emeraude);
+  background-color: var(--bg-ivoire-fiche);
+}
+
+.input-obd {
+  border-left: 3px solid var(--color-ambre-obd);
+  text-transform: uppercase;
+}
+
+.form-textarea {
+  resize: vertical;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border-filet-calibre);
+  background-color: var(--bg-ivoire-fiche);
+  color: var(--text-noir-carbone);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tag-badge:hover {
+  border-color: var(--color-emeraude);
+}
+
+.tag-badge.active {
+  background-color: var(--color-emeraude);
+  border-color: var(--color-emeraude);
+  color: var(--bg-ivoire-fiche);
+  font-weight: 500;
+}
+
+.char-counter {
+  display: block;
+  text-align: right;
+  font-size: 12px;
+  color: var(--text-acier-patine);
+  margin-top: 4px;
+}
+
+.alert-error {
+  background-color: var(--color-halo-carmin);
+  color: var(--color-carmin-nhtsa);
+  border: 1px solid var(--color-carmin-nhtsa);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin: 0 0 16px 0;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-filet-calibre);
+}
+
+.btn-primary {
+  background-color: var(--color-emeraude);
+  color: var(--bg-ivoire-fiche);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-emeraude-pression);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-ardoise);
+  border: 1px solid var(--border-filet-calibre);
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-creme-benchmark);
+}
+
+/* Vue Résultats du diagnostic */
+.diag-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.diag-main-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-noir-carbone);
+  margin: 0 0 6px 0;
+}
+
+.diag-main-subtitle {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-ardoise);
+}
+
+.diag-vehicle-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  background-color: var(--bg-ivoire-fiche);
+  border: 1px solid var(--border-filet-calibre);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.diag-vehicle-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.diag-icon-svg {
+  flex-shrink: 0;
+}
+
+.diag-modify-link {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-noir-carbone);
+  cursor: pointer;
+}
+
+.diag-modify-link:hover {
+  text-decoration: underline;
+}
+
+.diag-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.diag-card {
+  background-color: var(--bg-ivoire-fiche);
+  border: 1px solid var(--border-filet-calibre);
+  border-radius: 10px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.diag-card--heuristique {
+  border-top: 4px solid var(--color-marine-heuristique);
+}
+
+.diag-card--embeddings {
+  border-top: 4px solid var(--color-emeraude);
+}
+
+.diag-method-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.diag-method-banner--heuristique {
+  background-color: var(--color-marine-heuristique);
+  color: var(--bg-ivoire-fiche);
+}
+
+.diag-method-banner--embeddings {
+  background-color: var(--bg-sauge-chassis);
+  border: 1px solid var(--border-jointure-sauge);
+  color: var(--color-emeraude);
+}
+
+.diag-cause-kicker {
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--text-acier-patine);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.diag-title-score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.diag-cause-title {
+  font-family: var(--font-heading);
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text-noir-carbone);
+  line-height: 1.35;
+}
+
+.diag-big-score {
+  font-size: 24px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.diag-big-score--heuristique {
+  color: var(--color-marine-heuristique);
+}
+
+.diag-big-score--embeddings {
+  color: var(--color-emeraude);
+}
+
+.diag-score-caption {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-acier-patine);
+}
+
+.diag-divider {
+  border: none;
+  border-top: 1px solid var(--border-filet-calibre);
+  margin: 6px 0;
+}
+
+.diag-control-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.diag-control-kicker {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--text-acier-patine);
+  text-transform: uppercase;
+}
+
+.diag-control-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.diag-control-level {
+  font-size: 13px;
+  color: var(--text-ardoise);
+}
+
+.diag-alert-box {
+  margin-top: 4px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border-filet-calibre);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--bg-papier-atelier);
+}
+
+.diag-alert-box--danger {
+  border-color: var(--color-carmin-nhtsa);
+  background-color: var(--color-halo-carmin);
+  color: var(--color-carmin-nhtsa);
+}
+
+.badge-rappel-inline {
+  color: var(--color-carmin-nhtsa);
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+.diag-secondary-list {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-filet-calibre);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.diag-secondary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-ardoise);
+}
+
+.diag-empty-card {
+  padding: 32px 16px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-acier-patine);
+}
+
+.diag-why-panel {
+  background-color: var(--bg-ivoire-fiche);
+  border: 1px solid var(--border-filet-calibre);
+  border-radius: 10px;
+  padding: 20px 24px;
+}
+
+.diag-why-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text-noir-carbone);
+}
+
+.diag-why-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-filet-calibre);
+}
+
+.diag-why-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.diag-why-header {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.diag-why-header--heuristique {
+  color: var(--color-marine-heuristique);
+}
+
+.diag-why-header--embeddings {
+  color: var(--color-emeraude);
+}
+
+.diag-why-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.diag-why-total {
+  margin: 8px 0 0 0;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border-filet-calibre);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.diag-neighbor-item {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.diag-neighbor-item p {
+  margin: 4px 0 0 0;
+  color: var(--text-ardoise);
+}
+
+.diag-why-footnote {
+  font-size: 12px;
+  color: var(--text-acier-patine);
+}
+
+.diag-conclusion-box {
+  background-color: var(--bg-ivoire-fiche);
+  border: 1px solid var(--border-filet-calibre);
+  border-radius: 10px;
+  padding: 16px 24px;
+  font-size: 14px;
+}
+
+.diag-conclusion-box p {
+  margin: 6px 0 0 0;
+  color: var(--text-ardoise);
+}
+
+.diag-bottom-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+}
+
+.diag-disclaimer {
+  font-size: 13px;
+  color: var(--text-acier-patine);
+}
+
+.vehicule-summary-banner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+  padding: 16px;
+  background-color: var(--bg-papier-atelier);
+  border: 1px solid var(--border-filet-calibre);
+  border-radius: 8px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: var(--text-acier-patine);
+}
+
+.marge-basse-alerte {
+  margin-bottom: 16px;
+}
+
+.diag-why-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icone-chevron-accordeon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.15s ease;
+}
+
+.icone-chevron-ouvert {
+  transform: rotate(90deg);
+}
+
+@media (max-width: 860px) {
+  .form-grid-3,
+  .diag-cards-grid,
+  .diag-why-grid,
+  .vehicule-summary-banner {
+    grid-template-columns: 1fr;
+  }
+}
+/* Badge mode démo (fausses données) */
+.badge-mode-demo {
+  margin-left: 12px;
+  padding: 3px 8px;
+  border: 1px solid var(--color-ambre-obd);
+  border-radius: 4px;
+  background-color: var(--color-halo-ambre);
+  color: var(--color-ambre-obd);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.stepper-btn:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
