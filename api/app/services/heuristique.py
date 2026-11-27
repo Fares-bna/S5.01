@@ -12,62 +12,72 @@ from app.erreurs import ErreurApi
 # Pour chaque symptôme :
 # (id_cause, poids, nombre_de_plaintes)
 #
-# Les poids viennent du calcul effectué sur l'échantillon NHTSA.
+# Les poids viennent du calcul effectué sur le fichier complet NHTSA (140 481 plaintes de véhicules)
+# avec fréquence et gravité : voir pipeline/calcul_poids.py.
 REGLES = { # dictionnaire contenant les regles heuristiques
+
+    "S1": [
+        ("C3", 49.4, 793),
+        ("C7", 49.3, 791),
+        ("C1", 49.2, 782),
+        ("C13", 49.2, 782),
+        ("C14", 49.2, 782),
+    ],
     # S2 : voyant moteur allumé
-    2: [
-        ("C15", 63, 61),
-        ("C3", 56, 54),
-        ("C12", 56, 54),
-        ("C7", 51, 49),
-        ("C8", 51, 49),
-        ("C9", 51, 49),
-        ("C1", 5, 5),
-        ("C13", 5, 5),
+    "S2": [
+        ("C3", 68.9, 8669),
+        ("C12", 68.9, 8669),
+        ("C15", 66.5, 8430),
+        ("C7", 58.6, 7419),
+        ("C8", 58.6, 7419),
+        ("C9", 58.6, 7419),
+        ("C1", 17.8, 2249),
+        ("C13", 17.8, 2249),
     ],
 
     # S3 : perte de puissance
-    3: [
-        ("C15", 48, 52),
-        ("C3", 41, 44),
-        ("C8", 34, 37),
-        ("C9", 34, 37),
-        ("C5", 15, 16),
-        ("C6", 15, 16),
+    "S3": [
+        ("C15", 63.0, 9181),
+        ("C3", 57.4, 8276),
+        ("C8", 52.3, 7601),
+        ("C9", 52.3, 7601),
+        ("C5", 32.2, 4710),
+        ("C6", 32.2, 4710),
     ],
 
     # S6 : direction dure ou bruyante
-    6: [
-        ("C10", 51, 20),
+    "S6": [
+        ("C10", 79.6, 3540),
     ],
 
     # S7 : vibrations
-    7: [
-        ("C2", 11, 5),
+    "S7": [
+        ("C2", 9.4, 568),
+        ("C11", 6.0, 373),
     ],
 
     # S8 : fumée ou odeur de brûlé
-    8: [
-        ("C4", 38, 9),
-        ("C12", 38, 9),
-        ("C8", 29, 7),
-        ("C9", 29, 7),
-        ("C5", 21, 5),
+    "S8": [
+        ("C4", 77.4, 2813),
+        ("C12", 77.4, 2813),
+        ("C8", 65.1, 2369),
+        ("C9", 65.1, 2369),
+        ("C5", 12.5, 479),
     ],
 
     # S9 : moteur qui chauffe
-    9: [
-        ("C4", 54, 27),
+    "S9": [
+        ("C4", 82.8, 6501),
     ],
 
     # S10 : vitesses qui passent mal
-    10: [
-        ("C5", 45, 27),
-        ("C6", 45, 27),
+    "S10": [
+        ("C5", 65.2, 5293),
+        ("C6", 65.2, 5293),
     ],
 }
 
-# la fonction permet de garder seulement les causes compatibles avec le carburant, la boite 
+# la fonction permet de garder seulement les causes compatibles avec le carburant, la boite
 def filtrer_causes(
     causes: list[dict],
     carburant: str | None,
@@ -117,21 +127,21 @@ def classer_causes(
     ids_autorises = {cause["id_cause"] for cause in causes} # set( comme liste mais evite doublon) contenant les identifiants autorisés
 
     scores: dict[str, int] = {}
-    plaintes: dict[str, int] = {} # nb plaintes 
+    plaintes: dict[str, int] = {} # nb plaintes
     contributions: dict[str, list[dict]] = {} # symptomes qui ont contribués au score
 
     # On évite de compter deux fois le même symptôme.
     for symptome in dict.fromkeys(symptomes): # fromkeys permet de supprimer les doublons en conservant l'ordre
 
-        for id_cause, poids, nb_plaintes in REGLES.get(symptome, []): # .get pour les cas où il n'y a pas de regles renvoi []
+        for id_cause, poids, nb_plaintes in REGLES.get(f"S{symptome}", []): # .get pour les cas où il n'y a pas de regles renvoi []
 
             if id_cause not in ids_autorises:
                 continue
 
-            scores[id_cause] = scores.get(id_cause, 0) + poids # ajoute le score 
+            scores[id_cause] = scores.get(id_cause, 0) + poids # ajoute le score
             plaintes[id_cause] = plaintes.get(id_cause, 0) + nb_plaintes # ajoute  le nb de plaintes
 
-            contributions.setdefault(id_cause, []).append({ # permet de conserver l'explication du score 
+            contributions.setdefault(id_cause, []).append({ # permet de conserver l'explication du score
                 "id_symptome": symptome,
                 "points": poids,
             })
@@ -141,7 +151,7 @@ def classer_causes(
 
     total = sum(scores.values()) # addition de tt les points
 
-    causes_par_id = { # transformation de la liste des causes en dictionnaire 
+    causes_par_id = { # transformation de la liste des causes en dictionnaire
         cause["id_cause"]: cause
         for cause in causes
     }
@@ -155,7 +165,7 @@ def classer_causes(
         key=lambda id_cause: (
             -scores[id_cause], # - permet d'avoir le + grand score en 1
             -plaintes[id_cause], # si 2 causes ont le mm score celles qui a le + de plaintes passe avant
-            int(id_cause[1:]), # si tt est egale on utilise l'id 
+            int(id_cause[1:]), # si tt est egale on utilise l'id
         ),
     )
 
@@ -185,7 +195,7 @@ def _extrait(texte: str, longueur: int) -> str:
     if len(texte) <= longueur: # si texte deja court on laisse
         return texte
 
-    return texte[:longueur].rstrip() + "..." # sinon seulement une partie 
+    return texte[:longueur].rstrip() + "..." # sinon seulement une partie
 
 
 def recommander(
@@ -213,12 +223,12 @@ def recommander(
     if not causes:
         return []
 
-    ids_causes = [ # récupere les causes 
+    ids_causes = [ # récupere les causes
         cause["id_cause"]
         for cause in causes
     ]
 
-    lignes = depot.problemes_par_causes( # récupere les problemes connus liés aux causes 
+    lignes = depot.problemes_par_causes( # récupere les problemes connus liés aux causes
         id_vehicule,
         ids_causes,
         limite,
@@ -279,4 +289,4 @@ def recommander(
         if len(resultats) == limite:
             break
 
-    return resultats
+    return resultats
