@@ -1,0 +1,21 @@
+id_cas,symptome,description,categories_attendues
+M01,S1,"Le matin, la voiture ne démarre pas, le moteur tourne dans le vide",ENGINE|ELECTRICAL SYSTEM|FUEL/PROPULSION SYSTEM
+M02,S1,"Quand je tourne la clé, il ne se passe rien, juste un clic",ENGINE|ELECTRICAL SYSTEM|FUEL/PROPULSION SYSTEM
+M03,S2,Le voyant orange du moteur s'est allumé sur le tableau de bord,ENGINE|FUEL/PROPULSION SYSTEM|ELECTRICAL SYSTEM
+M04,S2,"Témoin moteur allumé, le garage parle d'un code défaut",ENGINE|FUEL/PROPULSION SYSTEM|ELECTRICAL SYSTEM
+M05,S3,La voiture n'avance plus quand j'appuie sur l'accélérateur,ENGINE|FUEL/PROPULSION SYSTEM|POWER TRAIN|VEHICLE SPEED CONTROL
+M06,S3,"Sur l'autoroute, le moteur a calé d'un coup et j'ai perdu la puissance",ENGINE|FUEL/PROPULSION SYSTEM|POWER TRAIN|VEHICLE SPEED CONTROL
+M07,S4,Un grincement métallique quand je freine,"SERVICE BRAKES|SERVICE BRAKES, HYDRAULIC"
+M08,S4,Les freins couinent à chaque arrêt,"SERVICE BRAKES|SERVICE BRAKES, HYDRAULIC"
+M09,S5,La pédale de frein s'enfonce presque jusqu'au plancher,"SERVICE BRAKES|SERVICE BRAKES, HYDRAULIC"
+M10,S5,"Les freins sont mous, la voiture met longtemps à s'arrêter","SERVICE BRAKES|SERVICE BRAKES, HYDRAULIC"
+M11,S6,"Le volant est très dur à tourner, surtout à l'arrêt",STEERING
+M12,S6,La direction assistée ne marche plus et fait un bruit,STEERING
+M13,S7,Le volant tremble au-dessus de 100 km/h,SUSPENSION|STEERING|WHEELS|TIRES|POWER TRAIN
+M14,S7,Toute la voiture vibre quand je roule,SUSPENSION|STEERING|WHEELS|TIRES|POWER TRAIN
+M15,S8,De la fumée sort du capot,ENGINE|ELECTRICAL SYSTEM|ENGINE AND ENGINE COOLING
+M16,S8,Une odeur de brûlé dans l'habitacle en roulant,ENGINE|ELECTRICAL SYSTEM|ENGINE AND ENGINE COOLING
+M17,S9,L'aiguille de température monte dans le rouge,ENGINE AND ENGINE COOLING|ENGINE
+M18,S9,"Le moteur surchauffe, je perds du liquide de refroidissement",ENGINE AND ENGINE COOLING|ENGINE
+M19,S10,La boîte automatique donne des à-coups en passant les vitesses,POWER TRAIN
+M20,S10,"Les vitesses passent mal, la voiture patine",POWER TRAIN

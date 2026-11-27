@@ -1,0 +1,4 @@
+# Dépendances de la comparaison des modèles d'embeddings (benchmark/comparer_modeles.py).
+# À installer en plus de pipeline/requirements.txt.
+sentence-transformers==6.3.0
+psutil==7.2.2
